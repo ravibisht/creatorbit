@@ -1,0 +1,19 @@
+{
+  "name": "com.creatorbit",
+  "version": "1.0.0",
+  "description": "This website connect brand and creators.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/ravibisht/creatorbit.git"
+  },
+  "author": "Ravi Bisht",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ravibisht/creatorbit/issues"
+  },
+  "homepage": "https://github.com/ravibisht/creatorbit#readme"
+}
