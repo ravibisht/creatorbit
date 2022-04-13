@@ -1,0 +1,140 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  nodeEsModules = true
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               Int       @id @default(autoincrement())
+  username         String    @unique
+  name             String
+  password         String
+  email            String    @unique
+  mobileNo         String
+  role             Role      @default(CREATOR)
+  bio              String?   @db.Text
+  profilePicture   String?
+  token            String?
+  facebookProfile  String?
+  instagramProfile String?
+  youtubeProfile   String?
+  status           Status    @default(ACTIVE)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime? @updatedAt
+
+  Campagin            Campagin[]
+  CampaginApplication CampaginApplication[]
+  BankDetail          BankDetail[]
+  Feedback            Feedback[]
+
+}
+
+enum Role {
+  CREATOR
+  BRAND
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+  BLOCK
+}
+
+model CampaginCategories {
+  id          Int        @id @default(autoincrement())
+  name        String
+  description String     @db.MediumText
+  image       String     @db.Text
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime?  @updatedAt
+  campagin    Campagin[]
+}
+
+model Campagin {
+  id                   Int                   @id @default(autoincrement())
+  name                 String
+  campagin             CampaginCategories    @relation(fields: [campaginCategoriesId], references: [id])
+  user                 User                  @relation(fields: [userId], references: [id])
+  shortDesc            String                @db.Text
+  description          String                @db.MediumText
+  image                String?               @db.Text
+  video                String?               @db.Text
+  startDate            DateTime
+  endDate              DateTime
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime?             @updatedAt
+  campaginCategoriesId Int
+  userId               Int
+  CampaginPlatforms    CampaginPlatforms[]
+  CampaginApplication  CampaginApplication[]
+}
+
+model CampaginPlatforms {
+  id         Int       @id @default(autoincrement())
+  plateform  Plateform
+  campagin   Campagin  @relation(fields: [campaginId], references: [id])
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime? @updatedAt
+  campaginId Int
+}
+
+enum Plateform {
+  INSTAGRAME
+  YOUTUBE
+  FACEBOOK
+}
+
+model CampaginApplication {
+  id                Int               @id @default(autoincrement())
+  applicationStatus ApplicationStatus
+  paymentStatus     PaymentStatus
+  user              User              @relation(fields: [userId], references: [id])
+  campagin          Campagin          @relation(fields: [campaginId], references: [id])
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  userId            Int
+  campaginId        Int
+}
+
+enum ApplicationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  COMPLETED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  CANCELLED
+}
+
+model BankDetail {
+  id          Int      @id @default(autoincrement())
+  user        User     @relation(fields: [userId], references: [id])
+  accountNo   String
+  IFSCCode    String
+  accountName String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      Int
+}
+
+// Feedback Model
+model Feedback {
+  id          Int      @id @default(autoincrement())
+  user        User?    @relation(fields: [userId], references: [id])
+  fullName    String   @db.VarChar(100)
+  mobileNo    String   @db.VarChar(100)
+  email       String   @db.VarChar(100)
+  message     String   @db.Text
+  contactDate DateTime @default(now())
+  userId      Int?
+}

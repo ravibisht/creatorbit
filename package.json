@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/ravibisht/creatorbit/issues"
   },
-  "homepage": "https://github.com/ravibisht/creatorbit#readme"
+  "homepage": "https://github.com/ravibisht/creatorbit#readme",
+  "devDependencies": {
+    "eslint": "^8.13.0"
+  }
 }
