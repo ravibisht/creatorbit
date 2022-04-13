@@ -9,14 +9,8 @@ export default (err, req, res, next) => {
         })
     }
 
-    let customError = {
-        statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
-        message: err.message || 'Internal Server Error',
-    }
-
-    if (customError.code === 'JsonWebTokenError') {
-        customError = new UnAuthroziedException(`Please Provide Valid Token`)
-    }
+    err = err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR
+    err = err.message || 'Internal Server Error'
 
     res.status(err.statusCodes).json({
         statusCode: err.statusCode,
