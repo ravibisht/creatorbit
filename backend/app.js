@@ -9,7 +9,7 @@ import { StatusCodes } from 'http-status-codes'
 import authRouter from './api/auth/routes/auth'
 export const app = express()
 
-if (process.env.ENVIROUMENT === 'development') {
+if (process.env.ENVIROUMENT === 'develjopment') {
     dotenv.config({ path: 'backend/config/.env' })
 } else {
     app.get('/', (req, res) => {
