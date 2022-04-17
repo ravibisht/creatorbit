@@ -1,6 +1,6 @@
 import express, { urlencoded } from 'express'
 import cookieParser from 'cookie-parser'
-
+import 'express-async-errors'
 import dotenv from 'dotenv'
 import notFoundMiddleware from './core/middleware/notFoundMiddleWare'
 import errorHandlerMiddleWare from './core/middleware/errorHandlerMiddleWare'
