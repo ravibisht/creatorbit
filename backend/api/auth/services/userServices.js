@@ -1,8 +1,10 @@
 import prisma from '@prisma/client'
 import { BadRequestException } from '../../../core/exception'
 import jwt from 'jsonwebtoken'
-import bycrypt from 'bcryptjs'
+import bcrypt from 'bcryptjs'
+import crypto from 'crypto'
 import { prismaExclude } from 'prisma-exclude'
+import { NotFoundException } from '../../../core/exception/index.js'
 
 export default class UserService {
     constructor() {
@@ -17,6 +19,7 @@ export default class UserService {
 
     async update(payload) {
         const {
+            id,
             username,
             name,
             bio,
@@ -43,12 +46,12 @@ export default class UserService {
         })
     }
 
-    async updateToken(email, token) {
+    async updateResetToken(email, token) {
         return this.userDB.update({
             where: {
                 email,
             },
-            data: { token },
+            data: token,
         })
     }
 
@@ -62,7 +65,7 @@ export default class UserService {
         })
     }
 
-    async getUserByUserName(username) {
+    async findByUsername(username) {
         if (!username) throw BadRequestException('Please Provide Username')
 
         return this.userDB.findUnique({
@@ -80,6 +83,13 @@ export default class UserService {
             where: { email },
         })
     }
+
+    async findOne(param) {
+        if (!param) throw new NotFoundException('User Not Found.')
+        return this.userDB.findFirst({
+            where: param,
+        })
+    }
 }
 
 export function getJwtToken(payLoad) {
@@ -89,10 +99,14 @@ export function getJwtToken(payLoad) {
 }
 
 export async function hashPassword(password) {
-    const SALT = await bycrypt.genSalt(10)
-    return bycrypt.hash(password, SALT)
+    const SALT = await bcrypt.genSalt(10)
+    return bcrypt.hash(password, SALT)
 }
 
 export async function comparePassword(enteredPassword, dbPassword) {
-    return bycrypt.compare(enteredPassword, dbPassword)
+    return bcrypt.compare(enteredPassword, dbPassword)
+}
+
+export function generateToken() {
+    return crypto.randomBytes(32).toString('hex')
 }

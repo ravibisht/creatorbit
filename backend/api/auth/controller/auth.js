@@ -2,13 +2,18 @@ import { StatusCodes } from 'http-status-codes'
 import { BadRequestException, NotFoundException } from '../../../core/exception'
 import Role from '../enums/Role'
 import UserService, {
-    hashPassword,
-    getJwtToken,
     comparePassword,
-    findByEmail,
+    generateToken,
+    getJwtToken,
+    hashPassword,
 } from '../services/userServices'
+import { HttpException } from '../../../core/exception/index.js'
+import { createHash } from '../../../core/util/Hash.js'
+import sendEmail from '../../../core/util/email.js'
 
 const us = new UserService()
+
+
 
 export const register = async (req, res) => {
     let userParam,
@@ -19,14 +24,22 @@ export const register = async (req, res) => {
 
     userParam['password'] = await hashPassword(userParam.password)
 
+    if (req.files.profilePicture) {
+        const file = req.files.profilePicture
+        userParam.profilePicture = __dirname + 'user/images' + file.name
+        file.mv(Path)
+    }
+
     let createdUser = await us.create(userParam)
 
-    res.status(StatusCodes.CREATED).json({
+    res.json({
         statusCode: StatusCodes.CREATED,
         message: 'Account Created',
         data: createdUser,
     })
 }
+
+
 
 export const login = async (req, res) => {
     const { username, password } = req.body
@@ -53,25 +66,89 @@ export const login = async (req, res) => {
     })
 }
 
+
+
 export const forgotPassword = async (req, res) => {
     const { email } = req.body
 
     if (!email) throw new BadRequestException(`Please Provide Valid Email`)
 
-    const user = await findByEmail(email)
+    const user = await us.findByEmail(email)
 
-    if (!user) throw new BadRequestException('Please Provide Valid Email')
+    if (!user)
+        throw new HttpException(
+            StatusCodes.OK,
+            'Reset password has been sent to you registered Mail Id.',
+        )
 
-    user.
-    res.json()
+    const resetToken = generateToken()
+
+    const hashToken = createHash(resetToken)
+    await us.updateResetToken(user.email, { token: hashToken })
+
+    const resetURL = `${req.protocol}://${req.get('host')}/${
+        process.env.BASE_URL
+    }reset-password/${resetToken}`
+    const message = `Forgot you password ? \n Click link below to change password.\n${resetURL}`
+    const subject = `Reset Password`
+
+    try {
+        await sendEmail({
+            email: user.email,
+            subject,
+            message,
+        })
+    } catch (err) {
+        console.log(err)
+        throw new HttpException(
+            StatusCodes.INTERNAL_SERVER_ERROR,
+            'Something went Wrong.',
+        )
+    }
+
+    res.json({
+        statusCode: StatusCodes.OK,
+        message: 'Reset password has been sent to you registered Mail Id.',
+        token: resetToken,
+    })
 }
+
+
+export const resetPassword = async (req, res) => {
+
+    const { token } = req.params
+
+    const hashedToken = createHash(token)
+
+    const user = await us.findOne({ token: hashedToken })
+
+    if (!user)
+        throw new BadRequestException('Reset password link has been expired.')
+
+    const { password } = req.body
+
+    if (!password) throw new BadRequestException('Please provide password.')
+
+    const hashedPassword = await hashPassword(password)
+
+    await us.updateResetToken(user.email, {
+        password: hashedPassword,
+        token: '',
+    })
+
+    res.json({
+        statusCode: StatusCodes.OK,
+        message: 'Password reset successfully.',
+    })
+}
+
 
 export const getUserByUsername = async (req, res) => {
     const { username } = req.params
 
     if (!username) throw new NotFoundException(`User Not Found`)
 
-    const user = await us.getUserByUserName(username)
+    const user = await us.findByUsername(username)
 
     res.json(user)
 }

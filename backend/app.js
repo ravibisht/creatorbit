@@ -1,6 +1,7 @@
 import express, { urlencoded } from 'express'
 import cookieParser from 'cookie-parser'
 import 'express-async-errors'
+import fileUpload from 'express-fileupload'
 import dotenv from 'dotenv'
 import notFoundMiddleware from './core/middleware/notFoundMiddleWare'
 import errorHandlerMiddleWare from './core/middleware/errorHandlerMiddleWare'
@@ -21,6 +22,7 @@ if (process.env.ENVIROUMENT === 'develjopment') {
 app.use(express.json())
 app.use(urlencoded({ extended: true }))
 app.use(express.static('/public'))
+app.use(fileUpload())
 app.use(cookieParser())
 
 const BASE_URL = process.env.BASE_URL || '/v1/api'
