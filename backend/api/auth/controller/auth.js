@@ -1,6 +1,5 @@
 import { StatusCodes } from 'http-status-codes'
 import { BadRequestException, NotFoundException } from '../../../core/exception'
-import Role from '../enums/Role'
 import UserService, {
     comparePassword,
     generateToken,
@@ -10,24 +9,52 @@ import UserService, {
 import { HttpException } from '../../../core/exception/index.js'
 import { createHash } from '../../../core/util/Hash.js'
 import sendEmail from '../../../core/util/email.js'
+import {
+    isValidEmail,
+    isValidName,
+    isValidPassword,
+    isValidProfilePicture,
+    isValidUsername,
+    MAX_PROFILE_PICTURE_SIZE,
+} from '../../../core/validation/index.js'
+import * as path from 'path'
 
 const us = new UserService()
 
-
-
 export const register = async (req, res) => {
-    let userParam,
-        { role, companyName } = req.body
+    const userParam = req.body
 
-    if (role === Role.BRAND && !companyName)
-        throw new BadRequestException('Company Name is Required')
+    if (!userParam.username || !isValidUsername(userParam.username))
+        throw new BadRequestException('Please Provide Valid Username')
+
+    if (!userParam.password || !isValidPassword(userParam.password))
+        throw new BadRequestException('Please Provide Valid Password')
+
+    if (!userParam.name || !isValidName(userParam.name))
+        throw new BadRequestException('Please Provide Valid Name')
+
+    if (!userParam.email || !isValidEmail(userParam.email))
+        throw new BadRequestException('Please provide Valid Email')
 
     userParam['password'] = await hashPassword(userParam.password)
 
-    if (req.files.profilePicture) {
-        const file = req.files.profilePicture
-        userParam.profilePicture = __dirname + 'user/images' + file.name
-        file.mv(Path)
+    if (req.files && req.files.profilePicture) {
+        const profilePicture = req.files.profilePicture
+
+        if (!profilePicture.mimetype.startsWith('image'))
+            throw new BadRequestException('Only Images Are Allowed')
+
+        if (!isValidProfilePicture(profilePicture))
+            throw new BadRequestException(
+                `Max Profile Picture Size ${MAX_PROFILE_PICTURE_SIZE / 1024} `,
+            )
+
+        userParam.profilePicture = path.join(
+            __dirname,
+            `user/images/${profilePicture.name}`,
+        )
+
+        await profilePicture.mv(userParam.profilePicture)
     }
 
     let createdUser = await us.create(userParam)
@@ -38,8 +65,6 @@ export const register = async (req, res) => {
         data: createdUser,
     })
 }
-
-
 
 export const login = async (req, res) => {
     const { username, password } = req.body
@@ -65,8 +90,6 @@ export const login = async (req, res) => {
         statusCode: StatusCodes.OK,
     })
 }
-
-
 
 export const forgotPassword = async (req, res) => {
     const { email } = req.body
@@ -113,9 +136,7 @@ export const forgotPassword = async (req, res) => {
     })
 }
 
-
 export const resetPassword = async (req, res) => {
-
     const { token } = req.params
 
     const hashedToken = createHash(token)
@@ -141,6 +162,7 @@ export const resetPassword = async (req, res) => {
         message: 'Password reset successfully.',
     })
 }
+
 
 
 export const getUserByUsername = async (req, res) => {

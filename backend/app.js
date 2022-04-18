@@ -22,7 +22,7 @@ if (process.env.ENVIROUMENT === 'develjopment') {
 app.use(express.json())
 app.use(urlencoded({ extended: true }))
 app.use(express.static('/public'))
-app.use(fileUpload())
+app.use(fileUpload({ useTempFiles: true }))
 app.use(cookieParser())
 
 const BASE_URL = process.env.BASE_URL || '/v1/api'
