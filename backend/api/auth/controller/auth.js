@@ -1,4 +1,5 @@
 import { StatusCodes } from 'http-status-codes'
+import crypto from 'crypto'
 import { BadRequestException, NotFoundException } from '../../../core/exception'
 import UserService, {
     comparePassword,
@@ -7,7 +8,7 @@ import UserService, {
     hashPassword,
 } from '../services/userServices'
 import { HttpException } from '../../../core/exception/index.js'
-import { createHash } from '../../../core/util/Hash.js'
+import { createHash } from '../../../core/util/hash.js'
 import sendEmail from '../../../core/util/email.js'
 import {
     isValidEmail,
@@ -36,6 +37,13 @@ export const register = async (req, res) => {
     if (!userParam.email || !isValidEmail(userParam.email))
         throw new BadRequestException('Please provide Valid Email')
 
+    const currentUsr = await us.findByUsername(userParam.username)
+    if (currentUsr) throw new BadRequestException('Username Already Exists')
+
+    const currentUser = await us.findByEmail(userParam.email)
+
+    if (currentUser) throw new BadRequestException('Email Already Exists')
+
     userParam['password'] = await hashPassword(userParam.password)
 
     if (req.files && req.files.profilePicture) {
@@ -49,16 +57,20 @@ export const register = async (req, res) => {
                 `Max Profile Picture Size ${MAX_PROFILE_PICTURE_SIZE / 1024} `,
             )
 
-        userParam.profilePicture = path.join(
-            __dirname,
-            `user/images/${profilePicture.name}`,
-        )
+        const imageName = crypto.randomUUID() + profilePicture.name
 
-        await profilePicture.mv(userParam.profilePicture)
+        userParam.profilePicture = process.env.USER_IMAGE_PATH + imageName
+
+        const imageFullPath = path.join(
+            path.resolve('./'),
+            '..',
+            userParam.profilePicture,
+        )
+        await profilePicture.mv(imageFullPath)
     }
 
     let createdUser = await us.create(userParam)
-
+    delete createdUser['password']
     res.json({
         statusCode: StatusCodes.CREATED,
         message: 'Account Created',
@@ -84,9 +96,13 @@ export const login = async (req, res) => {
         httpOnly: true,
     }
 
-    res.cookie('token', getJwtToken('user.id'), cookieOption).json({
+    res.cookie(
+        'authToken',
+        'Bearer ' + getJwtToken(user.id),
+        cookieOption,
+    ).json({
         data: { user },
-        message: 'Account Created',
+        message: 'Logged in Successfully',
         statusCode: StatusCodes.OK,
     })
 }
@@ -163,8 +179,6 @@ export const resetPassword = async (req, res) => {
     })
 }
 
-
-
 export const getUserByUsername = async (req, res) => {
     const { username } = req.params
 
@@ -173,4 +187,59 @@ export const getUserByUsername = async (req, res) => {
     const user = await us.findByUsername(username)
 
     res.json(user)
+}
+
+export const updateProfile = async (req, res) => {
+    const userParam = req.body
+    userParam.id = req.user.id
+
+    if (userParam.username && !isValidUsername(userParam.username))
+        throw new BadRequestException('Please Provide Valid Username')
+
+    if (userParam.name && !isValidName(userParam.name))
+        throw new BadRequestException('Please Provide Valid Name')
+
+    if (userParam.email && !isValidEmail(userParam.email))
+        throw new BadRequestException('Please provide Valid Email')
+
+    if (userParam.username) {
+        const currentUsr = await us.findByUsername(userParam.username)
+        if (currentUsr) throw new BadRequestException('Username Already Exists')
+    }
+
+    if (userParam.email) {
+        const currentUser = await us.findByEmail(userParam.email)
+        if (currentUser) throw new BadRequestException('Email Already Exists')
+    }
+
+    if (req.files && req.files.profilePicture) {
+        const profilePicture = req.files.profilePicture
+
+        if (!profilePicture.mimetype.startsWith('image'))
+            throw new BadRequestException('Only Images Are Allowed')
+
+        if (!isValidProfilePicture(profilePicture))
+            throw new BadRequestException(
+                `Max Profile Picture Size ${MAX_PROFILE_PICTURE_SIZE / 1024} `,
+            )
+
+        const imageName = crypto.randomUUID() + profilePicture.name
+
+        userParam.profilePicture = process.env.USER_IMAGE_PATH + imageName
+
+        const imageFullPath = path.join(
+            path.resolve('./'),
+            '..',
+            userParam.profilePicture,
+        )
+        await profilePicture.mv(imageFullPath)
+    }
+
+    let updatedUser = await us.update(userParam)
+
+    res.json({
+        statusCode: StatusCodes.OK,
+        message: 'Account Updated',
+        data: updatedUser,
+    })
 }

@@ -1,19 +1,24 @@
 import { UnAuthroziedException } from '../exception'
 import jwt from 'jsonwebtoken'
 
-export default (err, req, res, next) => {
-    const { authToken } = req.cookie
+export default async (req, res, next) => {
+    let { authToken } = req.cookies
 
-    if (!authToken && authToken.startsWith('Bearer '))
-        throw UnAuthroziedException(`Please Login To Access This Page.`)
+    if (!authToken || !authToken.startsWith('Bearer '))
+        throw new UnAuthroziedException(`Please Login To Access This Page.`)
+
+    authToken = authToken.split(' ')[1]
+    let decodedData
 
     try {
-        const decodedData = jwt.verify(authToken, process.env.JWT_TOKEN_SECRET)
-
-        if (!decodedData) throw UnAuthroziedException(`Authentication Failed.`)
-
-        req.user = { id: decodedData.id }
+        decodedData = jwt.verify(authToken, process.env.JWT_TOKEN_SECRET)
     } catch (err) {
-        throw UnAuthroziedException(`Authentication Failed.`)
+        throw new UnAuthroziedException(`Authentication Failed.`)
     }
+
+    if (!decodedData) throw new UnAuthroziedException(`Authentication Failed.`)
+
+    req.user = { id: decodedData.id }
+
+    next()
 }

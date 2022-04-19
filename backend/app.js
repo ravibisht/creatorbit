@@ -8,9 +8,10 @@ import errorHandlerMiddleWare from './core/middleware/errorHandlerMiddleWare'
 import { StatusCodes } from 'http-status-codes'
 
 import authRouter from './api/auth/routes/auth'
+import * as path from "path";
 export const app = express()
 
-if (process.env.ENVIROUMENT === 'develjopment') {
+if (process.env.ENVIROUMENT === 'development') {
     dotenv.config({ path: 'backend/config/.env' })
 } else {
     app.get('/', (req, res) => {
@@ -22,6 +23,8 @@ if (process.env.ENVIROUMENT === 'develjopment') {
 app.use(express.json())
 app.use(urlencoded({ extended: true }))
 app.use(express.static('/public'))
+app.use(express.static('../content'))
+process.env.USER_IMAGE_PATH =  `/content/images/user/`
 app.use(fileUpload({ useTempFiles: true }))
 app.use(cookieParser())
 

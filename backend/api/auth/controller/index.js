@@ -1,3 +1,8 @@
-import { login, register, getUserByUsername,forgotPassword,resetPassword } from './auth'
-
-export { login, register, getUserByUsername ,forgotPassword,resetPassword }
+export {
+    login,
+    register,
+    getUserByUsername,
+    forgotPassword,
+    resetPassword,
+    updateProfile,
+} from './auth'

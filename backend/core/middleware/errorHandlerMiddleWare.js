@@ -2,6 +2,9 @@ import { StatusCodes } from 'http-status-codes'
 import { HttpException, UnAuthroziedException } from '../exception'
 
 export default (err, req, res, next) => {
+
+    console.log(err)
+
     if (err instanceof HttpException) {
         res.status(err.statusCode).json({
             statusCode: err.statusCode,

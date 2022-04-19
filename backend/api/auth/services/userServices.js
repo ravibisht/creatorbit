@@ -29,20 +29,18 @@ export default class UserService {
             youtubeProfile,
         } = { ...payload }
 
-        if (username) {
-            this.findUnique(username)
-        }
-
-        return await this.userDB.update({
+        return this.userDB.update({
             where: { id },
             data: {
                 name,
+                username,
                 bio,
                 profilePicture,
                 facebookProfile,
                 instagramProfile,
                 youtubeProfile,
             },
+            select: this.exclude('user', ['password', 'token', 'updatedAt']),
         })
     }
 
@@ -93,7 +91,7 @@ export default class UserService {
 }
 
 export function getJwtToken(payLoad) {
-    return jwt.sign({ payLoad }, process.env.JWT_TOKEN_SECRET, {
+    return jwt.sign({ id: payLoad }, process.env.JWT_TOKEN_SECRET, {
         expiresIn: process.env.JWT_TOKEN_EXPIRE,
     })
 }
