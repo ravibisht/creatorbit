@@ -30,8 +30,8 @@ model User {
   createdAt        DateTime  @default(now())
   updatedAt        DateTime? @updatedAt
 
-  Campagin            Campagin[]
-  CampaginApplication CampaginApplication[]
+  Campaign            Campaign[]
+  CampaignApplication CampaignApplication[]
   BankDetail          BankDetail[]
   Feedback            Feedback[]
 
@@ -48,20 +48,20 @@ enum Status {
   BLOCK
 }
 
-model CampaginCategories {
+model CampaignCategories {
   id          Int        @id @default(autoincrement())
   name        String
   description String     @db.MediumText
   image       String     @db.Text
   createdAt   DateTime   @default(now())
   updatedAt   DateTime?  @updatedAt
-  campagin    Campagin[]
+  campaign    Campaign[]
 }
 
-model Campagin {
+model Campaign {
   id                   Int                   @id @default(autoincrement())
   name                 String
-  campagin             CampaginCategories    @relation(fields: [campaginCategoriesId], references: [id])
+  campaign             CampaignCategories    @relation(fields: [campaignCategoriesId], references: [id])
   user                 User                  @relation(fields: [userId], references: [id])
   shortDesc            String                @db.Text
   description          String                @db.MediumText
@@ -71,19 +71,19 @@ model Campagin {
   endDate              DateTime
   createdAt            DateTime              @default(now())
   updatedAt            DateTime?             @updatedAt
-  campaginCategoriesId Int
+  campaignCategoriesId Int
   userId               Int
-  CampaginPlatforms    CampaginPlatforms[]
-  CampaginApplication  CampaginApplication[]
+  CampaignPlatforms    CampaignPlatforms[]
+  CampaignApplication  CampaignApplication[]
 }
 
-model CampaginPlatforms {
+model CampaignPlatforms {
   id         Int       @id @default(autoincrement())
   plateform  Plateform
-  campagin   Campagin  @relation(fields: [campaginId], references: [id])
+  campaign   Campaign  @relation(fields: [campaignId], references: [id])
   createdAt  DateTime  @default(now())
   updatedAt  DateTime? @updatedAt
-  campaginId Int
+  campaignId Int
 }
 
 enum Plateform {
@@ -92,16 +92,16 @@ enum Plateform {
   FACEBOOK
 }
 
-model CampaginApplication {
+model CampaignApplication {
   id                Int               @id @default(autoincrement())
   applicationStatus ApplicationStatus
   paymentStatus     PaymentStatus
   user              User              @relation(fields: [userId], references: [id])
-  campagin          Campagin          @relation(fields: [campaginId], references: [id])
+  campaign          Campaign          @relation(fields: [campaignId], references: [id])
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
   userId            Int
-  campaginId        Int
+  campaignId        Int
 }
 
 enum ApplicationStatus {

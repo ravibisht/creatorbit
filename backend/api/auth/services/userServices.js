@@ -1,10 +1,10 @@
 import prisma from '@prisma/client'
-import { BadRequestException } from '../../../core/exception'
+import {BadRequestException} from '../../../core/exception'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
 import crypto from 'crypto'
-import { prismaExclude } from 'prisma-exclude'
-import { NotFoundException } from '../../../core/exception/index.js'
+import {prismaExclude} from 'prisma-exclude'
+import {NotFoundException} from '../../../core/exception/index.js'
 
 export default class UserService {
     constructor() {
@@ -14,7 +14,33 @@ export default class UserService {
     }
 
     async create(user) {
-        return this.userDB.create({ data: user })
+        const {
+            username,
+            name,
+            bio,
+            email,
+            mobileNo,
+            password,
+            profilePicture,
+            facebookProfile,
+            instagramProfile,
+            youtubeProfile,
+        } = {...user}
+
+        return this.userDB.create({
+            data: {
+                username,
+                name,
+                bio,
+                email,
+                mobileNo,
+                password,
+                profilePicture,
+                facebookProfile,
+                instagramProfile,
+                youtubeProfile,
+            }
+        })
     }
 
     async update(payload) {
@@ -27,10 +53,10 @@ export default class UserService {
             facebookProfile,
             instagramProfile,
             youtubeProfile,
-        } = { ...payload }
+        } = {...payload}
 
         return this.userDB.update({
-            where: { id },
+            where: {id},
             data: {
                 name,
                 username,
@@ -60,6 +86,7 @@ export default class UserService {
             where: {
                 username: username,
             },
+            select: this.exclude('user', ['password', 'token', 'status']),
         })
     }
 
@@ -78,7 +105,7 @@ export default class UserService {
         if (!email) throw BadRequestException('Please Provide Email')
 
         return this.userDB.findUnique({
-            where: { email },
+            where: {email},
         })
     }
 
@@ -91,7 +118,7 @@ export default class UserService {
 }
 
 export function getJwtToken(payLoad) {
-    return jwt.sign({ id: payLoad }, process.env.JWT_TOKEN_SECRET, {
+    return jwt.sign({id: payLoad}, process.env.JWT_TOKEN_SECRET, {
         expiresIn: process.env.JWT_TOKEN_EXPIRE,
     })
 }

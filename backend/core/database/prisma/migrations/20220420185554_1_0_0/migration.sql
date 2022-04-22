@@ -6,7 +6,7 @@ CREATE TABLE `User` (
     `password` VARCHAR(191) NOT NULL,
     `email` VARCHAR(191) NOT NULL,
     `mobileNo` VARCHAR(191) NOT NULL,
-    `role` ENUM( 'CREATOR', 'BRAND') NOT NULL DEFAULT 'CREATOR',
+    `role` ENUM('CREATOR', 'BRAND') NOT NULL DEFAULT 'CREATOR',
     `bio` TEXT NULL,
     `profilePicture` VARCHAR(191) NULL,
     `token` VARCHAR(191) NULL,
@@ -23,7 +23,7 @@ CREATE TABLE `User` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `CampaginCategories` (
+CREATE TABLE `CampaignCategories` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
     `description` MEDIUMTEXT NOT NULL,
@@ -31,11 +31,11 @@ CREATE TABLE `CampaginCategories` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NULL,
 
-  PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `Campagin` (
+CREATE TABLE `Campaign` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
     `shortDesc` TEXT NOT NULL,
@@ -46,35 +46,35 @@ CREATE TABLE `Campagin` (
     `endDate` DATETIME(3) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NULL,
-    `campaginCategoriesId` INTEGER NOT NULL,
+    `campaignCategoriesId` INTEGER NOT NULL,
     `userId` INTEGER NOT NULL,
-
-  PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `CampaginPlatforms` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `plateform` ENUM('INSTAGRAME', 'YOUTUBE', 'FACEBOOK') NOT ,
-    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updatedAt` DATETIME(3) NULL,NULL
-    `campaginId` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `CampaginApplication` (
+CREATE TABLE `CampaignPlatforms` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `plateform` ENUM('INSTAGRAME', 'YOUTUBE', 'FACEBOOK') NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NULL,
+    `campaignId` INTEGER NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `CampaignApplication` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `applicationStatus` ENUM('PENDING', 'ACCEPTED', 'REJECTED', 'COMPLETED') NOT NULL,
     `paymentStatus` ENUM('PENDING', 'PAID', 'CANCELLED') NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
     `userId` INTEGER NOT NULL,
-    `campaginId` INTEGER NOT NULL,
+    `campaignId` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf80mb4 COLLATE utf8mb4_unicode_ci;
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `BankDetail` (
@@ -103,19 +103,19 @@ CREATE TABLE `Feedback` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE `Campagin` ADD CONSTRAINT `Campagin_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Campaign` ADD CONSTRAINT `Campaign_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Campagin` ADD CONSTRAINT `Campagin_campaginCategoriesId_fkey` FOREIGN KEY (`campaginCategoriesId`) REFERENCES `CampaginCategories`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Campaign` ADD CONSTRAINT `Campaign_campaignCategoriesId_fkey` FOREIGN KEY (`campaignCategoriesId`) REFERENCES `CampaignCategories`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `CampaginPlatforms` ADD CONSTRAINT `CampaginPlatforms_campaginId_fkey` FOREIGN KEY (`campaginId`) REFERENCES `Campagin`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `CampaignPlatforms` ADD CONSTRAINT `CampaignPlatforms_campaignId_fkey` FOREIGN KEY (`campaignId`) REFERENCES `Campaign`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `CampaginApplication` ADD CONSTRAINT `CampaginApplication_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `CampaignApplication` ADD CONSTRAINT `CampaignApplication_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `CampaginApplication` ADD CONSTRAINT `CampaginApplication_campaginId_fkey` FOREIGN KEY (`campaginId`) REFERENCES `Campagin`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `CampaignApplication` ADD CONSTRAINT `CampaignApplication_campaignId_fkey` FOREIGN KEY (`campaignId`) REFERENCES `Campaign`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `BankDetail` ADD CONSTRAINT `BankDetail_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

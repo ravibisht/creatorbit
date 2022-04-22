@@ -1,89 +1,94 @@
 import {StatusCodes} from 'http-status-codes'
 import crypto from 'crypto'
 import {BadRequestException, NotFoundException} from '../../../core/exception'
-import UserService, {comparePassword, generateToken, getJwtToken, hashPassword,} from '../services/userServices'
-import {HttpException} from '../../../core/exception/index.js'
-import {createHash} from '../../../core/util/hash.js'
-import sendEmail from '../../../core/util/email.js'
+import {HttpException} from '../../../core/exception/index'
 import {
     isValidEmail,
     isValidName,
-    isValidPassword,
     isValidProfilePicture,
     isValidUsername,
     MAX_PROFILE_PICTURE_SIZE,
 } from '../../../core/validation/index.js'
+
 import * as path from 'path'
-import {isValidString} from "../../../core/validation/validation.js";
+
+import {
+    isValidDate, isValidEndDate,
+    isValidImage, isValidStartDate,
+    isValidString,
+    isValidVideo,
+    MAX_CAMPAIGN_IMAGE_SIZE,
+    MAX_CAMPAIGN_VIDEO_SIZE
+} from "../../../core/validation/validation.js";
 
 const us = new UserService()
 
-export const register = async (req, res) => {
+export const create = async (req, res) => {
 
-    const userParam = req.body
+    const campaignParam = req.body
 
-    if (!userParam.username || !isValidUsername(userParam.username))
-        throw new BadRequestException('Please Provide Valid Username')
-
-    if (!userParam.password || !isValidPassword(userParam.password))
-        throw new BadRequestException('Please Provide Valid Password')
-
-    if (!userParam.name || !isValidName(userParam.name))
+    if (!campaignParam.name || !isValidString(campaignParam.name, 3, 100))
         throw new BadRequestException('Please Provide Valid Name')
 
-    if (!userParam.email || !isValidEmail(userParam.email))
-        throw new BadRequestException('Please provide Valid Email')
+    if (!campaignParam.shortDesc || !isValidString(campaignParam.shortDesc))
+        throw new BadRequestException('Please Provide Valid Short Description')
 
-    if (!userParam.mobileNo || !isValidString(userParam.mobileNo, 10))
-        throw new BadRequestException('Please provide Valid Mobile No')
+    if (!campaignParam.description || !isValidString(campaignParam.description))
+        throw new BadRequestException('Please Provide Valid Description')
 
-    const currentUsr = await us.findByUsername(userParam.username)
+    if (!isValidStartDate(campaignParam.startDate,new Date()))
+        throw new BadRequestException('Please Provide Valid Start Date')
 
-    if (currentUsr) throw new BadRequestException('Username Already Exists')
+    if (!isValidEndDate(campaignParam.startDate,campaignParam.endDate))
+        throw  new BadRequestException('Please Provide Valid End Date')
 
-    const currentUser = await us.findByEmail(userParam.email)
+    if (req.files && req.files.image) {
 
-    if (currentUser) throw new BadRequestException('Email Already Exists')
+        const campaignImage = req.files.image
 
-    userParam['password'] = await hashPassword(userParam.password)
+        if (!campaignImage.mimetype.startsWith('image')) throw new BadRequestException('Only Images Are Allowed')
 
-    if (req.files && req.files.profilePicture) {
-        const profilePicture = req.files.profilePicture
+        if (!isValidImage(campaignImage, MAX_CAMPAIGN_IMAGE_SIZE)) throw new BadRequestException(`Max Image  Size ${MAX_CAMPAIGN_IMAGE_SIZE} MB`,)
 
-        if (!profilePicture.mimetype.startsWith('image'))
-            throw new BadRequestException('Only Images Are Allowed')
+        const imageName = crypto.randomUUID() + campaignImage.name
 
-        if (!isValidProfilePicture(profilePicture))
-            throw new BadRequestException(
-                `Max Profile Picture Size ${MAX_PROFILE_PICTURE_SIZE / 1024} `,
-            )
+        campaignParam.image = process.env.CAMPAGIN_IMAGE_PATH+ path.sep + imageName
 
-        const imageName = crypto.randomUUID() + profilePicture.name
+        const imageFullPath = path.join(path.resolve('./'), '..', campaignParam.image,)
 
-        userParam.profilePicture = process.env.USER_IMAGE_PATH + imageName
-
-        const imageFullPath = path.join(
-            path.resolve('./'),
-            '..',
-            userParam.profilePicture,
-        )
-        await profilePicture.mv(imageFullPath)
+        await campaignImage.mv(imageFullPath)
     }
 
-    let createdUser = await us.create(userParam)
-    delete createdUser['password']
 
+    if (req.files && req.files.video) {
+
+        const campaignVideo = req.files.video
+
+        if (!campaignVideo.mimetype.startsWith('video'))
+            throw new BadRequestException('Only Videos Are Allowed')
+
+        if (!isValidVideo(campaignVideo, MAX_CAMPAIGN_VIDEO_SIZE))
+            throw new BadRequestException(`Max Image  Size ${MAX_CAMPAIGN_VIDEO_SIZE} MB`,)
+
+        const videoName = crypto.randomUUID() + campaignVideo.name
+
+        campaignParam.video = process.env.CAMPAGIN_VIDEO_PATH + videoName
+
+        const videoFullPath = path.join(path.resolve('./'), '..', campaignParam.video,)
+
+        await campaignVideo.mv(videoFullPath)
+    }
+
+
+ const campaign  =
     res.json({
         statusCode: StatusCodes.CREATED,
-        message: 'Account Created',
+        message: 'Campaign Created',
         data: createdUser,
     })
 }
 
-
-
 export const login = async (req, res) => {
-
     const {username, password} = req.body
 
     if (!username || !password)
@@ -112,11 +117,7 @@ export const login = async (req, res) => {
     })
 }
 
-
-
-
 export const forgotPassword = async (req, res) => {
-
     const {email} = req.body
 
     if (!email) throw new BadRequestException(`Please Provide Valid Email`)
@@ -132,7 +133,6 @@ export const forgotPassword = async (req, res) => {
     const resetToken = generateToken()
 
     const hashToken = createHash(resetToken)
-
     await us.updateResetToken(user.email, {token: hashToken})
 
     const resetURL = `${req.protocol}://${req.get('host')}/${
@@ -142,9 +142,13 @@ export const forgotPassword = async (req, res) => {
     const subject = `Reset Password`
 
     try {
-        await sendEmail({ email: user.email, subject, message,})
+        await sendEmail({
+            email: user.email,
+            subject,
+            message,
+        })
     } catch (err) {
-
+        console.log(err)
         throw new HttpException(
             StatusCodes.INTERNAL_SERVER_ERROR,
             'Something went Wrong.',
@@ -196,9 +200,7 @@ export const getUserByUsername = async (req, res) => {
 }
 
 export const updateProfile = async (req, res) => {
-
     const userParam = req.body
-
     userParam.id = req.user.id
 
     if (userParam.username && !isValidUsername(userParam.username))
@@ -243,7 +245,7 @@ export const updateProfile = async (req, res) => {
         await profilePicture.mv(imageFullPath)
     }
 
-    const updatedUser = await us.update(userParam)
+    let updatedUser = await us.update(userParam)
 
     res.json({
         statusCode: StatusCodes.OK,

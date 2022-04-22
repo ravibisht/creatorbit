@@ -7,7 +7,9 @@ import notFoundMiddleware from './core/middleware/notFoundMiddleWare'
 import errorHandlerMiddleWare from './core/middleware/errorHandlerMiddleWare'
 import { StatusCodes } from 'http-status-codes'
 
+
 import authRouter from './api/auth/routes/auth'
+import campaignCategoryRouter from './api/campagin/routes/campaign-category.js'
 import * as path from "path";
 export const app = express()
 
@@ -23,14 +25,21 @@ if (process.env.ENVIROUMENT === 'development') {
 app.use(express.json())
 app.use(urlencoded({ extended: true }))
 app.use(express.static('/public'))
-app.use(express.static('../content'))
+app.use(express.static(path.join(path.resolve('./'), '..')))
+
 process.env.USER_IMAGE_PATH =  `/content/images/user/`
+process.env.CAMPAGIN_IMAGE_PATH =  `/content/images/campaign/`
+process.env.CAMPAGIN_VIDEO_PATH =  `/content/video/campaign/`
+process.env.CAMPAGIN_CATEGORY_IMAGE_PATH =  `/content/images/campaign-category/`
+
 app.use(fileUpload({ useTempFiles: true }))
 app.use(cookieParser())
 
-const BASE_URL = process.env.BASE_URL || '/v1/api'
+const BASE_URL = process.env.BASE_URL || 'api/v1/'
+
+const CAMPAIGN_CATEGORY = BASE_URL + '/campaign-category'
 
 app.use(BASE_URL, authRouter)
-console.log(BASE_URL)
+app.use(CAMPAIGN_CATEGORY, campaignCategoryRouter)
 app.use(errorHandlerMiddleWare)
 app.use(notFoundMiddleware)

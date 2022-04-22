@@ -4,10 +4,10 @@ import jwt from 'jsonwebtoken'
 export default async (req, res, next) => {
     let { authToken } = req.cookies
 
-    if (!authToken || !authToken.startsWith('Bearer '))
-        throw new UnAuthroziedException(`Please Login To Access This Page.`)
+    if (!authToken || !authToken.startsWith('Bearer ')) throw new UnAuthroziedException(`UnAuthenticated`)
 
     authToken = authToken.split(' ')[1]
+
     let decodedData
 
     try {
@@ -16,7 +16,7 @@ export default async (req, res, next) => {
         throw new UnAuthroziedException(`Authentication Failed.`)
     }
 
-    if (!decodedData) throw new UnAuthroziedException(`Authentication Failed.`)
+    if (!decodedData.id) throw new UnAuthroziedException(`Authentication Failed.`)
 
     req.user = { id: decodedData.id }
 

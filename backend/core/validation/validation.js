@@ -1,4 +1,6 @@
 export const MAX_PROFILE_PICTURE_SIZE = 1024 * 1024
+export const MAX_CAMPAIGN_IMAGE_SIZE = 1024 * 1024
+export const MAX_CAMPAIGN_VIDEO_SIZE = 1024 * 1024
 
 
 export const isValidEmail = (email) => {
@@ -20,6 +22,35 @@ export const isValidName = (name) =>{
 }
 
 
+export const isValidString= (value , min , max, type) =>{
+    return typeof value ==='string' && (min? value.length >= min : 0) && (max ? value.length <=max : true)
+}
+
+
 export const isValidProfilePicture = (profilePictureSize) =>{
-    return typeof profilePictureSize.name==='string' && profilePictureSize.size <= MAX_PROFILE_PICTURE_SIZE
+    return  profilePictureSize.size <= MAX_PROFILE_PICTURE_SIZE
+}
+
+export const isValidImage = (image,maxSize) =>{
+    return image.mimetype.startsWith('image') && image.size <= maxSize
+}
+
+
+export const isValidVideo = (video,maxSize) =>{
+    return video.mimetype.startsWith('video') && video.size <= maxSize
+}
+
+
+export const  isAfter = (date1 , date2) =>{
+ return date1 ? date2 ? new Date(date1).getMilliseconds() >= date2.getMilliseconds() : true : false
+}
+
+
+export  const isValidStartDate = (startDate ) =>{
+    return startDate? new Date(startDate).getMilliseconds() > new Date().getMilliseconds() : false
+}
+
+
+export  const isValidEndDate = (startDate, endDate ) =>{
+    return startDate && endDate ? new Date(startDate).getMilliseconds() < new Date(endDate).getMilliseconds() : false
 }
