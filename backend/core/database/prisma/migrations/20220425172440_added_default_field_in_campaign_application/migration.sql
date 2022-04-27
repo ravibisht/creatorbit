@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `campaignapplication` MODIFY `applicationStatus` ENUM('PENDING', 'ACCEPTED', 'REJECTED', 'COMPLETED') NOT NULL DEFAULT 'PENDING',
+    MODIFY `paymentStatus` ENUM('PENDING', 'PAID', 'CANCELLED') NOT NULL DEFAULT 'PENDING';

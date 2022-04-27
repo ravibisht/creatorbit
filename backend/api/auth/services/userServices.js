@@ -66,7 +66,7 @@ export default class UserService {
                 instagramProfile,
                 youtubeProfile,
             },
-            select: this.exclude('user', ['password', 'token', 'updatedAt']),
+            select: this.exclude('user', ['password']),
         })
     }
 
@@ -80,13 +80,11 @@ export default class UserService {
     }
 
     async findByUsernameWithPassword(username) {
-        if (!username) throw BadRequestException('Please Provide Username')
-
         return this.userDB.findUnique({
             where: {
                 username: username,
             },
-            select: this.exclude('user', ['password', 'token', 'status']),
+            // select: this.exclude('user', ['password'])
         })
     }
 
@@ -118,9 +116,14 @@ export default class UserService {
 }
 
 export function getJwtToken(payLoad) {
-    return jwt.sign({id: payLoad}, process.env.JWT_TOKEN_SECRET, {
-        expiresIn: process.env.JWT_TOKEN_EXPIRE,
-    })
+    return jwt.sign({
+            id: payLoad.id,
+            username: payLoad.username,
+            role: payLoad.role
+        },
+        process.env.JWT_TOKEN_SECRET, {
+            expiresIn: process.env.JWT_TOKEN_EXPIRE,
+        })
 }
 
 export async function hashPassword(password) {

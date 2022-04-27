@@ -34,7 +34,6 @@ model User {
   CampaignApplication CampaignApplication[]
   BankDetail          BankDetail[]
   Feedback            Feedback[]
-
 }
 
 enum Role {
@@ -58,32 +57,38 @@ model CampaignCategories {
   campaign    Campaign[]
 }
 
+
 model Campaign {
   id                   Int                   @id @default(autoincrement())
+  userId               Int
+  campaignCategoryId Int
   name                 String
-  campaign             CampaignCategories    @relation(fields: [campaignCategoriesId], references: [id])
-  user                 User                  @relation(fields: [userId], references: [id])
   shortDesc            String                @db.Text
   description          String                @db.MediumText
   image                String?               @db.Text
   video                String?               @db.Text
   startDate            DateTime
   endDate              DateTime
-  createdAt            DateTime              @default(now())
-  updatedAt            DateTime?             @updatedAt
-  campaignCategoriesId Int
-  userId               Int
   CampaignPlatforms    CampaignPlatforms[]
   CampaignApplication  CampaignApplication[]
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime?             @updatedAt
+  
+  user                 User                  @relation(fields: [userId], references: [id])
+  campaign             CampaignCategories    @relation(fields: [campaignCategoryId], references: [id])
+
+  @@unique(fields: [id,userId],name : "userCampaign")
 }
 
 model CampaignPlatforms {
   id         Int       @id @default(autoincrement())
-  plateform  Plateform
-  campaign   Campaign  @relation(fields: [campaignId], references: [id])
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime? @updatedAt
   campaignId Int
+  plateform  Plateform
+  updatedAt  DateTime? @updatedAt
+  createdAt  DateTime  @default(now())
+  
+  campaign   Campaign  @relation(fields: [campaignId], references: [id])
+  @@unique (fields: [id,campaignId],name:"campaignPlatform")
 }
 
 enum Plateform {
@@ -92,16 +97,20 @@ enum Plateform {
   FACEBOOK
 }
 
+
 model CampaignApplication {
   id                Int               @id @default(autoincrement())
-  applicationStatus ApplicationStatus
-  paymentStatus     PaymentStatus
-  user              User              @relation(fields: [userId], references: [id])
-  campaign          Campaign          @relation(fields: [campaignId], references: [id])
-  createdAt         DateTime          @default(now())
-  updatedAt         DateTime          @updatedAt
   userId            Int
   campaignId        Int
+  applicationStatus ApplicationStatus @default(PENDING)
+  paymentStatus     PaymentStatus     @default(PENDING)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  
+  user              User              @relation(fields: [userId], references: [id])
+  campaign          Campaign          @relation(fields: [campaignId], references: [id])
+
+  @@unique(fields: [id,userId,campaignId],name : "userCampaignApplication")
 }
 
 enum ApplicationStatus {
@@ -119,23 +128,28 @@ enum PaymentStatus {
 
 model BankDetail {
   id          Int      @id @default(autoincrement())
-  user        User     @relation(fields: [userId], references: [id])
+  userId      Int
   accountNo   String
   IFSCCode    String
   accountName String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  userId      Int
+  
+  user        User     @relation(fields: [userId], references: [id])
+  @@unique( fields:  [id,userId], name : "userBankDetail")
+
+
 }
 
 // Feedback Model
 model Feedback {
   id          Int      @id @default(autoincrement())
-  user        User?    @relation(fields: [userId], references: [id])
   fullName    String   @db.VarChar(100)
   mobileNo    String   @db.VarChar(100)
   email       String   @db.VarChar(100)
   message     String   @db.Text
   contactDate DateTime @default(now())
   userId      Int?
+  
+  user        User?    @relation(fields: [userId], references: [id])
 }

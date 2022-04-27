@@ -55,7 +55,8 @@ const Enum = function () {
                 ' but symbol is expected'
             )
         if (!symbolToName.get(sym)) {
-            throw "Can't find enum value for symbol " + sym.toString()
+            return  null
+            //throw "Can't find enum value for symbol " + sym.toString()
         }
         return symbolToName.get(sym)
     }
@@ -83,8 +84,11 @@ const Enum = function () {
                 return key
             }
         }
-        throw "Can't find symbol for name " + name
+        return null
+        //throw "Can't find symbol for name " + name
     }
+
+
 
     Object.freeze(self)
 }

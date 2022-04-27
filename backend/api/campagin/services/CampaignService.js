@@ -12,35 +12,50 @@ export default class CampaignService {
     }
 
     async create(campaign) {
-        return this.db.create({data: campaign})
+        return this.db.create({data: campaign,})
     }
 
     async update(campaign) {
         const {
             id,
+            userId,
             name,
-            campaignCategoriesId,
             shortDesc,
             description,
             startDate,
             endDate,
-            campaignPlatforms,
+            image,
+            video
         } = {...campaign}
 
         return this.db.update({
-            where: {id},
+            where: {
+                userCampaign: {
+                    id,
+                    userId
+                }
+            },
             data: {
                 name,
-                campaignCategoriesId,
                 shortDesc,
                 description,
                 startDate,
                 endDate,
-                campaignPlatforms,
+                image,
+                video
             },
         })
     }
 
+
+    async deleteById(id,userId) {
+        return this.db.delete({
+            userCampaign: {
+                id,
+                userId
+            }
+        })
+    }
 
     async findById(id) {
         return this.db.findUnique({
@@ -52,6 +67,16 @@ export default class CampaignService {
         return this.db.findFirst({
             where: param,
         })
+    }
+
+     getAllCampaign(data ) {
+        return this.db.findMany({
+         ...data
+        })
+    }
+
+     totalCampaign(){
+        return this.db.count()
     }
 }
 

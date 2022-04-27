@@ -47,29 +47,6 @@ export const register = async (req, res) => {
 
     userParam['password'] = await hashPassword(userParam.password)
 
-    if (req.files && req.files.profilePicture) {
-        const profilePicture = req.files.profilePicture
-
-        if (!profilePicture.mimetype.startsWith('image'))
-            throw new BadRequestException('Only Images Are Allowed')
-
-        if (!isValidProfilePicture(profilePicture))
-            throw new BadRequestException(
-                `Max Profile Picture Size ${MAX_PROFILE_PICTURE_SIZE / 1024} `,
-            )
-
-        const imageName = crypto.randomUUID() + profilePicture.name
-
-        userParam.profilePicture = process.env.USER_IMAGE_PATH + imageName
-
-        const imageFullPath = path.join(
-            path.resolve('./'),
-            '..',
-            userParam.profilePicture,
-        )
-        await profilePicture.mv(imageFullPath)
-    }
-
     let createdUser = await us.create(userParam)
     delete createdUser['password']
 
@@ -79,7 +56,6 @@ export const register = async (req, res) => {
         data: createdUser,
     })
 }
-
 
 
 export const login = async (req, res) => {
@@ -103,7 +79,7 @@ export const login = async (req, res) => {
 
     res.cookie(
         'authToken',
-        'Bearer ' + getJwtToken(user.id),
+        'Bearer ' + getJwtToken({...user}),
         cookieOption,
     ).json({
         data: {user},
@@ -111,8 +87,6 @@ export const login = async (req, res) => {
         statusCode: StatusCodes.OK,
     })
 }
-
-
 
 
 export const forgotPassword = async (req, res) => {
@@ -142,7 +116,7 @@ export const forgotPassword = async (req, res) => {
     const subject = `Reset Password`
 
     try {
-        await sendEmail({ email: user.email, subject, message,})
+        await sendEmail({email: user.email, subject, message,})
     } catch (err) {
 
         throw new HttpException(
@@ -165,8 +139,7 @@ export const resetPassword = async (req, res) => {
 
     const user = await us.findOne({token: hashedToken})
 
-    if (!user)
-        throw new BadRequestException('Reset password link has been expired.')
+    if (!user) throw new BadRequestException('Reset password link has been expired.')
 
     const {password} = req.body
 
@@ -191,8 +164,13 @@ export const getUserByUsername = async (req, res) => {
     if (!username) throw new NotFoundException(`User Not Found`)
 
     const user = await us.findByUsername(username)
+    if (!user) throw new NotFoundException(`User Not Found With Username : ${username}`)
 
-    res.json(user)
+    res.json({
+        statusCode: StatusCodes.OK,
+        message: 'User Detail',
+        data: user
+    })
 }
 
 export const updateProfile = async (req, res) => {

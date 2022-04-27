@@ -1,8 +1,8 @@
 import { StatusCodes } from 'http-status-codes'
 import HttpException from './HttpException'
 
-export default class InternalServerException extends HttpException {
+export default class ForbiddenException extends HttpException {
     constructor(message) {
-        super(message, StatusCodes.INTERNAL_SERVER_ERROR)
+        super(StatusCodes.FORBIDDEN,message)
     }
 }
