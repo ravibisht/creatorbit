@@ -1,0 +1,132 @@
+<%- include('../user/partials/header.ejs',{title:'My Profile'}) %>
+<%- include('../user/partials/head.ejs') %>
+
+<% if (messageInfo !== "undefined") { %>
+    <%- include('../user/partials/message.ejs',messageInfo ) %>
+<% } %>
+
+<% function getApplicationStatusClass(status) {
+    let className = "pending"
+
+    switch (status) {
+        case "PENDING":
+            className = "pending"
+            break;
+        case "REJECTED":
+            className = "rejected"
+            break;
+        case "ACCEPTED" :
+            className = "accepted"
+            break;
+        case "COMPLETED" :
+            className = "completed"
+            break;
+    }
+    return className
+} %>
+<% function getPaymentStatusClass(status) {
+    let className = "pending"
+
+    switch (status) {
+        case "PENDING":
+            className = "pending"
+            break;
+        case "PAID":
+            className = "completed"
+            break;
+        case "CANCELLED" :
+            className = "rejected"
+
+    }
+    return className
+} %>
+
+
+<body>
+
+<div class="user-view">
+
+    <%- include('../user/user-nav.ejs') %>
+
+    <div class="user-view__content" style="padding: 0; margin-bottom: 30px;">
+
+        <div class="campaign-nav">
+
+            <div class="campaign-title">
+
+                <span class="heading-secondary ">
+                    Campaign Application Requests
+                </span>
+
+                <div class="filter-item">
+                    <span>Pending</span>
+                    <img class="card__icon" src="img/arrow-black.svg">
+                </div>
+            </div>
+
+            <% data?.forEach(item=> { %>
+
+                <div class="campaign-container">
+
+                    <div class="campaign-image">
+                        <img src="<%= item.campaign.image %>" alt=""/>
+                    </div>
+
+                    <div class="campaign-header">
+
+                        <h3 class="title">
+                            <%= item.campaign.name %>
+                        </h3>
+
+                        <p class="description">
+                            <%= item.campaign.shortDesc %>
+                        </p>
+
+                        <h4>Request By
+                            <a href="/<%= item.user.username %>">
+                                <%= item.user.name %>
+                            </a>
+                        </h4>
+
+                        <h4>Application Status
+                            <form style="display: inline;" action="/campaign-application/<%= item.id %>"
+                                  method="post">
+
+                                <select name="applicationStatus"
+                                        class=" application-status-brand <%= getApplicationStatusClass(item.applicationStatus) %>"
+                                        onchange="this.form.submit()">
+                                    <option  value="<%= item.applicationStatus %>"> <%= item.applicationStatus %></option>
+                                    <option value="PENDING">Pending</option>
+                                    <option value="ACCEPTED">Accept</option>
+                                    <option value="REJECTED">Reject</option>
+                                    <option value="COMPLETED">Complete</option>
+                                </select>
+                            </form>
+                        </h4>
+
+                        <h4 style="margin-top: 5px;">Payment Status
+
+                            <form style="display: inline;" action="/campaign-application/<%= item.id %>" method="post">
+
+                                <select name="paymentStatus"
+                                        class=" application-status-brand <%=  getPaymentStatusClass(item.paymentStatus) %>"
+                                        onchange="this.form.submit()">
+                                    <option  value="<%= item.paymentStatus %>"> <%= item.paymentStatus %></option>
+                                    <option value="PENDING">Pending</option>
+                                    <option value="PAID">Paid</option>
+                                    <option value="CANCELLED">Cancelled</option>
+                                </select>
+                            </form>
+
+                        </h4>
+                    </div>
+                </div>
+            <% }); %>
+
+        </div>
+
+
+    </div>
+</div>
+</body>
+<%- include('../user/partials/footer.ejs') %>

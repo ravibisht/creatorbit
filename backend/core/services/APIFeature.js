@@ -4,7 +4,6 @@ export default class APIFeature {
 
     constructor(queryString) {
         this.query = queryString
-
     }
 
     paginate() {

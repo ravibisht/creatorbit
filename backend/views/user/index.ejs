@@ -1,0 +1,112 @@
+<%- include('../user/partials/header.ejs',{ title:'Explore Campaigns' }) %>
+
+<%- include('../user/partials/head.ejs',{ campaignCategories : data.categories}) %>
+
+<% if (messageInfo!=="undefined") { %>
+    <%- include('../user/partials/message.ejs',messageInfo ) %>
+<% } %>
+
+
+<body>
+
+
+<div class="top-banner">
+
+    <h1 class="main-heading"> Explore Campaigns</h1>
+
+    <p class="sub-heading">
+        Welcome to Explore Campaigns! Here with a few clicks you can join for campaigns for your favourite
+        brands. It's as easy as one, two, three & four!
+    </p>
+
+    <div class="steps">
+        <span>1. Explore campaigns</span>
+        <span>2. Do you qualify?</span>
+        <span>3. Review the description</span>
+        <span>4. Apply</span>
+    </div>
+
+</div>
+
+
+<main class="main">
+
+
+    <div class="filter-container">
+
+        <div class="fiter-item">
+            <span>Campaign Category</span>
+
+            <img class="card__icon" src="img/arrow-black.svg">
+
+        </div>
+
+        <div class="fiter-item">
+            <span>Campaign Platform</span>
+
+            <img class="card__icon" src="img/arrow-black.svg">
+        </div>
+
+        <div class="fiter-item">
+            <span>SortBy</span>
+            <img class="card__icon" src="img/arrow-black.svg">
+
+        </div>
+    </div>
+
+    <div class="card-container">
+        <% data.campaigns.forEach(item=> { %>
+
+            <div class="card">
+                <div class="card__header">
+                    <div class="card__picture">
+                        <img src="<%= item.image %> " alt="<%= item.name %>" class="card__picture-img"/>
+                    </div>
+
+                    <h3 class="heading-tertirary">
+                                    <span>
+                                        <%= item.name %>
+                                    </span>
+                    </h3>
+                </div>
+
+                <div class="card__details">
+                    <h4 class="card__sub-heading">
+                        <%= item.shortDesc %>
+                    </h4>
+
+                    <div class="card__category">
+                        <p>
+                            <%= item.campaign.name %>
+                        </p>
+                    </div>
+
+
+                    <div class="card__data  ">
+                        <p class="card-sub-heading">Start Date</p>
+                        <p><%= moment(item.startDate).format('ddd, MMMM-YYYY hh:mm A') %></p>
+                    </div>
+                    <div class="card__data">
+                        <p class="card-sub-heading">End Date</p>
+
+                        <span><%= moment(item.endDate).format('ddd, MMMM-YYYY hh:mm A') %></span>
+                    </div>
+
+                    <div class="card__data card-sub-heading">
+                        <span> Price 200$</span>
+                    </div>
+
+                </div>
+
+                <div class="card__footer">
+                    <a href="/campaign/<%= item.id %>" class="btn btn--green btn--small">Details</a>
+                </div>
+            </div>
+        <% }); %>
+
+    </div>
+
+</main>
+</body>
+
+<%- include('../user/partials/footer.ejs') %>

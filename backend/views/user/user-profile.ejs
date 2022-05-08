@@ -1,0 +1,66 @@
+<%- include('../user/partials/header.ejs',{title:'My Profile'}) %>
+<%- include('../user/partials/head.ejs') %>
+
+<div class="main-profile">
+
+
+    <div class="profile-container">
+
+        <div class="user-profile">
+            <div class="user-info">
+                <img src="<%= user.profilePicture %>"/>
+                <p class="name"> <%= user.username %> (<%= user.role %>)</p>
+                <p class="sub-heading"> <%= user.email %></p>
+                <p class="sub-heading"> <%= user.mobileNo %></p>
+
+                <p class="bio"> <%= user.bio %></p>
+            </div>
+
+            <h2>Social Media</h2>
+
+            <div class="social-media">
+                <div class="social-media-links">
+                    <img src="../img/youtube.svg">
+                    <p><a id="user-profile-social-media" href="<%= user.youtubeProfile %>"> Youtube </a></p>
+                </div>
+
+                <div class="social-media-links">
+                    <img src="../img/instagram.svg">
+                    <p><a href="<%= user.instagramProfile %>"> Instagram </a></p>
+                </div>
+
+
+                <div class="social-media-links">
+                    <img src="../img/facebook.svg">
+                    <p><a id="user-profile-social-media" href="<%= user.facebookProfile %>"> Facebook </a></p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <p class="divider"></p>
+
+
+    <div class="bank-detail">
+
+        <h2 style="margin-left:0 !important;" class="heading-secondary ma-bt-md"> Bank Account Detail </h2>
+
+        <div class="info">
+            <label htmlFor="bank-account-no">Bank Account No</label>
+            <p id="bank-account-no"
+            ><%= user.BankDetail?.accountNo %></p>
+        </div>
+        <div class="info">
+            <label htmlFor="IFSCCode">IFSC Code</label>
+            <p id="IFSCCode"><%= user.BankDetail?.IFSCCode %></p>
+        </div>
+        <div class="info ma-bt-lg">
+            <label htmlFor="account-name">Account Name</label>
+            <p id="account-name"><%= user.BankDetail?.accountName %></p>
+        </div>
+    </div>
+</div>
+
+
+<%- include('../user/partials/footer.ejs') %>

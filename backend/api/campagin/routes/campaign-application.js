@@ -1,5 +1,12 @@
 import {Router} from 'express'
-import {create, deleteById, findById, getCampaignApplicationByUser, update} from '../controller/campaign-application'
+import {
+    create,
+    deleteById,
+    findById,
+    getCampaignApplicationByOwner,
+    getCampaignApplicationByUser,
+    update
+} from '../controller/campaign-application'
 import authorizationMiddleWare, {restrictTo} from "../../../core/middleware/authorizationMiddleWare.js";
 import Role from "../../auth/enums/Role.js";
 
@@ -9,8 +16,10 @@ router.route('/')
     .post(create)
     .get(getCampaignApplicationByUser)
 
+router.route('/manage').get(getCampaignApplicationByOwner)
+
 router.route('/:campaignApplicationId')
-    .patch(restrictTo(Role.CREATOR), update)
+    .post(restrictTo(Role.BRAND), update)
     .delete(deleteById)
     .get(findById)
 

@@ -1,0 +1,101 @@
+<%- include('../user/partials/header.ejs',{title:'Sign Up'}) %>
+<%-include('../user/partials/head.ejs') %>
+
+    <body>
+        <section class="section-header">
+            <div class="heading-box">
+                <h1 class="heading-primary">
+                    <span><%=campaign.name %></span>
+                </h1>
+            </div>
+        </section>
+
+        <section class="section-description">
+            <section class="section-pictures">
+                <div class="picture-box">
+                    <img
+                        class="picture-box__img "
+                        src="<%= campaign.image  %> "
+                        alt="<%=campaign.name %>"
+                    />
+              
+            </section>
+
+            <div class="overview-box">
+                <div>
+                    <div class="overview-box__group">
+                        <h2 class="heading-secondary ma-bt-md">
+                            Campaign Detail
+                        </h2>
+
+                        <div class="overview-box__detail">
+                            <svg class="overview-box__icon">
+                                <use
+                                    xlink:href="img/icons.svg#icon-calendar"
+                                ></use>
+                            </svg>
+                            <span class="overview-box__label">Company Name  </span>
+                            <span class="overview-box__text"><%=campaign.user.name %></span>
+                        </div>
+
+                        <div class="overview-box__detail">
+                            <svg class="overview-box__icon">
+                                <use
+                                    xlink:href="img/icons.svg#icon-calendar"
+                                ></use>
+                            </svg>
+                            <span class="overview-box__label">Category </span>
+                            <span class="overview-box__text">Social Media</span>
+                        </div>
+
+                        <div class="overview-box__detail">
+                            <svg class="overview-box__icon">
+                                <use
+                                    xlink:href="img/icons.svg#icon-calendar"
+                                ></use>
+                            </svg>
+                            <span class="overview-box__label">Start Date</span>
+                            <span class="overview-box__text"><%= moment(campaign.startDate).format('ddd, MMMM-YYYY hh:mm A') %></span>
+                        </div>
+
+                        <div class="overview-box__detail">
+                            <svg class="overview-box__icon">
+                                <use
+                                    xlink:href="img/icons.svg#icon-trending-up"
+                                ></use>
+                            </svg>
+                            <span class="overview-box__label">End Date</span>
+                            <span class="overview-box__text"
+                                ><%= moment(campaign.endDate).format('ddd, MMMM-YYYY hh:mm A') %>
+                            </span>
+                        </div>
+
+                        <div class="overview-box__detail">
+                            <svg class="overview-box__icon">
+                                <use xlink:href="img/icons.svg#icon-user"></use>
+                            </svg>
+                            <span class="overview-box__label">Price</span>
+                            <span class="overview-box__text"> <%= campaign.price%></span>
+                        </div>
+                    </div>
+
+                    <form method="post" action="/campaign-application">
+                        <input type="hidden" name="campaignId" value="<%= campaign.id%>"/>
+                    <input type="submit" value="Apply For Campaign" class="btn btn--green span-all-rows">
+
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <div class="description-box">
+            <h2 class="heading-secondary ma-bt-md">
+                About the park camper tour
+            </h2>
+
+            <p class="description__text">
+               <%= campaign.description  %> 
+            </p>
+        </div>
+  
+        <%- include('../user/partials/footer.ejs') %>

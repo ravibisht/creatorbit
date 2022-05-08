@@ -5,4 +5,7 @@ export {
     forgotPassword,
     resetPassword,
     updateProfile,
+    registerView,
+    loginView,
+    getMyProfile
 } from './auth'

@@ -1,0 +1,11 @@
+<% if (messageInfo !== undefined && messageInfo.length > 0 ){ %>
+
+    <%
+        var messageObj = messageInfo[0]
+        var statusCode = messageObj.statusCode || 200
+    %>
+    <div class="alert-message <% if (statusCode && statusCode < 400) { %> alert <% } else { %> error-alert <% } %>">
+        <span class="closeBtn" onclick="this.parentElement.style.display='none';">&times;</span>
+        <%= messageObj.message %>
+    </div>
+<% } %>

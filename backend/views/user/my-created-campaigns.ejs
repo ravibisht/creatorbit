@@ -1,0 +1,83 @@
+<%- include('../user/partials/header.ejs',{title:'My Profile'}) %>
+    <%- include('../user/partials/head.ejs') %>
+
+        <body>
+
+            <div class="user-view">
+
+                <%- include('../user/user-nav.ejs') %>
+
+                    <div class="user-view__content" style="padding: 0;">
+
+                        <div class="campaign-nav">
+
+                            <div class="campaign-title">
+
+                             <span class="heading-secondary ">
+                              Your Campaigns
+                             </span>
+
+                                <div class="filter-item">
+                                    <span>Pending</span>
+                                    <img class="card__icon" src="img/arrow-black.svg">
+                                </div>
+                            </div>
+
+                        <div class="card-container" style="grid-gap: 2rem;">
+                            <% campaigns.forEach(item=> { %>
+
+                                <div class="card">
+                                    <div class="card__header">
+                                        <div class="card__picture" style="height: 15.5rem;">
+                                            <img src="<%= item.image %> " alt="<%= item.name %>" class="card__picture-img"/>
+                                        </div>
+
+                                        <h3 class="heading-tertirary">
+                                    <span>
+                                        <%= item.name %>
+                                    </span>
+                                        </h3>
+                                    </div>
+
+                                    <div class="card__details">
+                                        <h4 class="card__sub-heading">
+                                            <%= item.shortDesc %>
+                                        </h4>
+
+                                        <div class="card__category">
+                                            <p>
+                                                <%= item.campaign.name %>
+                                            </p>
+                                        </div>
+
+
+                                        <div class="card__data  ">
+                                            <p class="card-sub-heading">Start Date</p>
+                                            <p><%= moment(item.startDate).format('ddd, MMMM-YYYY hh:mm A') %></p>
+                                        </div>
+                                        <div class="card__data">
+                                            <p class="card-sub-heading">End Date</p>
+
+                                            <span><%= moment(item.endDate).format('ddd, MMMM-YYYY hh:mm A') %></span>
+                                        </div>
+
+                                        <div class="card__data card-sub-heading">
+                                            <span > Price 200$</span>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="card__footer">
+                                        <a href="/campaign/<%= item.id %>" class="btn btn--green btn--small">Details</a>
+                                    </div>
+                                </div>
+                            <% }); %>
+
+                        </div>
+
+                            </div>
+
+</div>
+                    </div>
+        </body>
+        <%- include('../user/partials/footer.ejs') %>

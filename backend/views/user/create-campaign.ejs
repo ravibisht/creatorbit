@@ -1,0 +1,151 @@
+<%- include('../user/partials/header.ejs',{title:'Sign Up'}) %> <%-
+include('../user/partials/head.ejs') %>
+<body>
+<main class="main">
+    <div class="campaign-form ">
+
+        <h2 class="heading-secondary ma-bt-lg ">Create Campaign</h2>
+
+        <form class="form form--login" action="/campaign/create" enctype="multipart/form-data" method="post">
+
+
+            <div class="wrap-drop  form__label" id="campaignCategory">
+
+                <span>Select Campaign Category</span>
+                <input type="hidden" name="campaignCategoryId" id="categoryId">
+                <ul class="drop">
+                    <% var campaignCategories = campaignCategories;
+                    campaignCategories?.forEach( (item, index) => { %>
+                        <% if (index === 0){ %>
+                        <li class="selected" id="<%= item.id %>" ><a > <%= item.name %></a></li>
+                        <% } else { %>
+                            <li id="<%= item.id %>" ><a ><%= item.name %></a></li>
+                        <% } %>
+                    <% }) %>
+                </ul>
+            </div>
+
+            <div class="form__group">
+
+                <label class="form__label" for="name" style="margin-top: 20px;">Campaign Name </label>
+                <input
+                        name="name"
+                        class="form__input"
+                        id="name"
+                        type="text"
+                        placeholder="Campaign Name"
+                        required="required"
+                />
+            </div>
+
+            <div class="form__group ma-bt-md">
+                <label class="form__label" for="campaignPlatform">Select Campaign Platform</label>
+
+                <div class="platform-type">
+
+                    <div class="platform">
+                        <img src="/img/youtube.svg">
+                        <input type="checkbox" value="YOUTUBE" name="platform" checked/>
+                        <p>Youtube</p>
+                    </div>
+
+                    <div class="platform">
+                        <img src="/img/instagram.svg">
+                        <input type="checkbox" value="INSTAGRAM"/>
+                        <p>Instagram</p>
+                    </div>
+
+
+                    <div class="platform">
+                        <img src="/img/facebook.svg">
+                        <input type="checkbox" value="FACEBOOK"/>
+                        <p>Facebook </p>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="campaign-date">
+                <div class="form__group ">
+                    <label class="form__label" for="startDate">Start Date</label>
+                    <input type="datetime-local" name="startDate"/>
+                </div>
+
+                <div class="form__group ">
+                    <label class="form__label" for="endDate">End Date</label>
+                    <input type="datetime-local" name="endDate"/>
+                </div>
+            </div>
+
+            <div class="form__group">
+                <label class="form__label" for="price">Price</label>
+
+                <input
+                        name="price"
+                        class="form__input"
+                        id="price"
+                        type="number"
+                        required="required"
+                />
+            </div>
+
+
+            <div class="form__group">
+                <label class="form__label" for="shortDesc">Short Description</label>
+
+                <input
+                        name="shortDesc"
+                        class="form__input"
+                        id="shortDesc"
+                        type="text"
+                        required="required"
+                />
+            </div>
+
+            <div class="form__group">
+                <label class="form__label" for="image">Select Image</label>
+                <input
+                        name="image"
+                        class="form__input"
+                        id="phone-no"
+                        type="file"
+                        required="required"
+                />
+            </div>
+
+            <div class="form__group ma-bt-md">
+                <label class="form__label" for="campaignVideo">Select Video</label>
+                <input
+                        name="video"
+                        class="form__input"
+                        id="campaignVideo"
+                        type="file"
+                />
+            </div>
+
+
+            <div class="form__group">
+
+                <label class="form__label" for="description">Description</label>
+
+                <textarea
+                        name="description"
+                        class="form__input"
+                        id="email"
+                        type="text"
+                        required="required"
+                > </textarea>
+            </div>
+
+
+            <div class="form__group">
+                <button type="submit" class="btn btn--green">
+                    Sign Up
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
+</body>
+
+<%- include('../user/partials/footer.ejs') %>

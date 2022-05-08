@@ -2,9 +2,7 @@ import prisma from '@prisma/client'
 
 import {prismaExclude} from 'prisma-exclude'
 
-
 export default class CampaignService {
-
     constructor() {
         this.prisma = new prisma.PrismaClient()
         this.db = this.prisma.campaign
@@ -12,7 +10,33 @@ export default class CampaignService {
     }
 
     async create(campaign) {
-        return this.db.create({data: campaign,})
+        const {
+            campaignCategoryId,
+            userId,
+            name,
+            price,
+            shortDesc,
+            description,
+            startDate,
+            endDate,
+            image,
+            video,
+
+        } = {...campaign}
+        return this.db.create({
+            data: {
+                campaignCategoryId,
+                userId,
+                name,
+                price,
+                shortDesc,
+                description,
+                startDate,
+                endDate,
+                image,
+                video,
+            }
+        })
     }
 
     async update(campaign) {
@@ -25,15 +49,15 @@ export default class CampaignService {
             startDate,
             endDate,
             image,
-            video
+            video,
         } = {...campaign}
 
         return this.db.update({
             where: {
                 userCampaign: {
                     id,
-                    userId
-                }
+                    userId,
+                },
             },
             data: {
                 name,
@@ -42,24 +66,37 @@ export default class CampaignService {
                 startDate,
                 endDate,
                 image,
-                video
+                video,
             },
         })
     }
 
-
-    async deleteById(id,userId) {
+    async deleteById(id, userId) {
         return this.db.delete({
             userCampaign: {
                 id,
-                userId
-            }
+                userId,
+            },
         })
     }
 
     async findById(id) {
         return this.db.findUnique({
             where: {id},
+            include: {
+                user: true,
+                CampaignPlatforms: true,
+                CampaignApplication:{
+                   select:{
+                       user:true,
+                       id:true,
+                       applicationStatus:true,
+                       paymentStatus:true
+                   }
+
+                },
+                campaign: true,
+            },
         })
     }
 
@@ -69,14 +106,29 @@ export default class CampaignService {
         })
     }
 
-     getAllCampaign(data ) {
+    getAllCampaign(data) {
         return this.db.findMany({
-         ...data
+            ...data,
+            include: {
+                campaign: true,
+            },
         })
     }
 
-     totalCampaign(){
+    getCampaignByUserId(userId) {
+        return this.db.findMany({
+            where : {
+                userId:userId
+            },
+            include:{
+                campaign:true,
+                user:true,
+                CampaignPlatforms: true
+            }
+        })
+    }
+
+    totalCampaign() {
         return this.db.count()
     }
 }
-

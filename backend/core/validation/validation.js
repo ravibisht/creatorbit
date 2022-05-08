@@ -24,7 +24,6 @@ export const isValidString = (value, min, max,) => {
     return typeof value === 'string' && (min ? value.length >= min : true) && (max ? value.length <= max : true)
 }
 
-
 export const isValidProfilePicture = (profilePictureSize) => {
     return profilePictureSize.size <= MAX_PROFILE_PICTURE_SIZE
 }

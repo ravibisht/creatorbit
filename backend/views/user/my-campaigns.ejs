@@ -1,0 +1,91 @@
+<%- include('../user/partials/header.ejs',{title:'My Profile'}) %>
+    <%- include('../user/partials/head.ejs') %>
+
+    <% function getApplicationStatusClass (status) {
+        let className = "pending"
+
+        switch(status){
+            case "PENDING": className="pending"
+            break;
+            case "REJECTED": className="rejected"
+            break;
+            case "ACCEPTED" : className="accepted"
+            break;
+            case "COMPLETED" : className="completed"
+             break;
+        }
+        return className
+    }  %>
+
+<% function getPaymentStatusClass (status) {
+    let className = "pending"
+
+    switch(status){
+        case "PENDING": className="pending"
+            break;
+        case "PAID": className="completed"
+            break;
+        case "CANCELLED" : className="rejected"
+
+    }
+    return className
+}  %>
+
+
+<body>
+
+            <div class="user-view">
+
+                <%- include('../user/user-nav.ejs') %>
+
+                    <div class="user-view__content" style="padding: 0; margin-bottom: 30px;">
+
+                        <div class="campaign-nav">
+
+                            <div class="campaign-title">
+
+                             <span class="heading-secondary ">
+                              Your Campaign Application 
+                             </span>
+
+                            <div class="filter-item">
+                                <span>Pending</span>
+                                <img class="card__icon" src="img/arrow-black.svg">
+                            </div>
+                            </div>
+
+                            <% data?.forEach(item=> { %>
+
+                                <div class="campaign-container">
+                                    <div class="campaign-image" >
+                                        <img src="<%=item.campaign.image %>"  alt=""/>
+                                    </div>
+
+                                    <div class="campaign-header">
+                                        <h3 class="title">
+                                            <%= item.campaign.name %>
+                                        </h3>
+
+                                        <p class="description">
+                                            <%= item.campaign.shortDesc %>
+                                        </p>
+
+                                        <h4>Application Status <span class="application-status <%= getApplicationStatusClass(item.applicationStatus) %> " >
+                                                <%= item.applicationStatus %>
+                                            </span></h4>
+
+                                        <h4 style="margin-top: 5px;">Payment Status <span class="application-status <%= getPaymentStatusClass(item.paymentStatus) %> " >
+                                                <%= item.paymentStatus %>
+                                            </span></h4>
+                                    </div>
+                                </div>
+                                <% }); %>
+
+                        </div>
+
+
+                    </div>
+            </div>
+            </div>
+        </body>
+        <%- include('../user/partials/footer.ejs') %>

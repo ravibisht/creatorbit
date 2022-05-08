@@ -1,0 +1,32 @@
+<%- include('../user/partials/header.ejs',{title:'Login'}) %>
+    <%- include('../user/partials/public-head.ejs') %>
+
+<% if (messageInfo!=="undefined") { %>
+    <%- include('../user/partials/message.ejs',messageInfo ) %>
+<% } %>
+
+        <body>
+            <main class="main">
+                <div class="login-form">
+                    <h2 class="heading-secondary ma-bt-lg">Log into your account</h2>
+                    <form class="form form--login" method="post">
+                        <div class="form__group">
+                            <label class="form__label" for="username">Username</label>
+                            <input class="form__input" type="text" name="username" placeholder="username"
+                                required="required" />
+                        </div>
+                        <div class="form__group ma-bt-md">
+                            <label class="form__label" for="password">Password</label>
+                            <input class="form__input" name="password" type="password" placeholder="••••••••"
+                                required="required" minlength="6" />
+                        </div>
+                        <div class="form__group">
+                            <button type="submit" class="btn btn--green">Login</button>
+                        </div>
+                    </form>
+                </div>
+            </main>
+
+        </body>
+
+        <%- include('../user/partials/footer.ejs') %>

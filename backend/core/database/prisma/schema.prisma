@@ -32,7 +32,7 @@ model User {
 
   Campaign            Campaign[]
   CampaignApplication CampaignApplication[]
-  BankDetail          BankDetail[]
+  BankDetail          BankDetail?
   Feedback            Feedback[]
 }
 
@@ -69,6 +69,7 @@ model Campaign {
   video                String?               @db.Text
   startDate            DateTime
   endDate              DateTime
+  price                String?
   CampaignPlatforms    CampaignPlatforms[]
   CampaignApplication  CampaignApplication[]
   createdAt            DateTime              @default(now())
@@ -83,7 +84,7 @@ model Campaign {
 model CampaignPlatforms {
   id         Int       @id @default(autoincrement())
   campaignId Int
-  plateform  Plateform
+  platform  Platform
   updatedAt  DateTime? @updatedAt
   createdAt  DateTime  @default(now())
   
@@ -91,7 +92,7 @@ model CampaignPlatforms {
   @@unique (fields: [id,campaignId],name:"campaignPlatform")
 }
 
-enum Plateform {
+enum Platform {
   INSTAGRAME
   YOUTUBE
   FACEBOOK
@@ -152,4 +153,15 @@ model Feedback {
   userId      Int?
   
   user        User?    @relation(fields: [userId], references: [id])
+}
+
+model Admin {
+  id          Int      @id @default(autoincrement())
+  name        String   @db.VarChar(50)
+  username    String   @unique
+  password    String   @db.VarChar(100)
+  email       String   @unique
+
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
 }

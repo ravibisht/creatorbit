@@ -1,0 +1,119 @@
+<%- include('../user/partials/header.ejs',{title:'My Profile'}) %>
+<%- include('../user/partials/head.ejs') %>
+
+<% if (messageInfo!=="undefined") { %>
+    <%- include('../user/partials/message.ejs',messageInfo ) %>
+<% } %>
+
+<body>
+<main class="main">
+    <div class="user-view">
+
+        <%- include('../user/user-nav.ejs') %>
+
+        <div class="user-view__content">
+            <div class="user-view__form-container">
+                <h2 class="heading-secondary ma-bt-md">
+                    Your account settings
+                </h2>
+                <form class="form form-user-data" method="post" action="/update-profile"
+                      enctype="multipart/form-data">
+                    <input type="hidden" name="_method" value="PATCH"/>
+
+                    <div class="form__group">
+                        <label class="form__label" htmlFor="name">Name</label>
+                        <input class="form__input" value="<%= user.name %>" id="name" name="name"
+                               type="text" required="required"/>
+                    </div>
+
+                    <div class="form__group">
+                        <label class="form__label" htmlFor="username">Username</label>
+                        <input class="form__input" id="username" value="<%= user.username %>"
+                               name="username" type="text" required="required"/>
+                    </div>
+
+                    <div class="form__group">
+                        <label class="form__label" htmlFor="email">Email</label>
+                        <input class="form__input" id="email" value="<%= user.email %>" name="email"
+                               type="text" required="required"/>
+                    </div>
+
+                    <div class="form__group">
+                        <label class="form__label" htmlFor="mobileNo">Mobile No</label>
+                        <input class="form__input" id="mobileNo" value="<%= user.mobileNo %>"
+                               name="mobileNo" type="text" required="required" name="mobileNo"/>
+                    </div>
+
+                    <div class="form__group">
+                        <label class="form__label" htmlFor="bio">Bio</label>
+                        <input class="form__input" id="bio" name="bio" type="text"
+                               value="<%= user.bio %>" name="bio"/>
+                    </div>
+
+                    <div class="form__group">
+                        <label class="form__label" htmlFor="facebookProfile">Facebook Profile</label>
+                        <input class="form__input" id="name" name="facebookProfile" type="text"
+                               value="<%= user.facebookProfile %>" name="facebookProfile"/>
+                    </div>
+
+                    <div class="form__group">
+                        <label class="form__label" htmlFor="instagramProfile">Instagram Profile</label>
+                        <input class="form__input" id="instagramProfile" name="instagramProfile"
+                               type="text" value="<%= user.instagramProfile %>"/>
+                    </div>
+
+                    <div class="form__group">
+                        <label class="form__label" name="youtubeProfile" htmlFor="name">Youtube
+                            Profile</label>
+                        <input class="form__input" id="name" type="text" name="youtubeProfile"
+                               value="<%= user.youtubeProfile %>"/>
+                    </div>
+
+                    <div class="form__group form__user-photo_container">
+                        <img class="form__user-photo" src="<%= user.profilePicture %>"
+                             alt="User photo"/>
+                        <input class="form__upload" type="file" name="profilePicture" accept="image/*"
+                               id="photo"/>
+                        <label htmlFor="photo" onclick="getElementById('photo').click()">Choose new photo</label>
+                    </div>
+                    <div class="form__group right">
+                        <input type="submit" value="Save profile" class="btn btn--small btn--green">
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="line">&nbsp;</div>
+            <div class="user-view__form-container">
+                <h2 class="heading-secondary ma-bt-md">
+                    Password change
+                </h2>
+                <form class="form form-user-password">
+                    <div class="form__group">
+                        <label class="form__label" htmlFor="password-current">Current password</label>
+                        <input class="form__input" id="password-current" type="password"
+                               placeholder="••••••••" required="required" minlength="8"/>
+                    </div>
+                    <div class="form__group">
+                        <label class="form__label" htmlFor="password">New password</label>
+                        <input class="form__input" id="password" type="password" placeholder="••••••••"
+                               required="required" minlength="8"/>
+                    </div>
+                    <div class="form__group ma-bt-lg">
+                        <label class="form__label" htmlFor="password-confirm">Confirm password</label>
+                        <input class="form__input" id="password-confirm" type="password"
+                               placeholder="••••••••" required="required" minlength="8"/>
+                    </div>
+                    <div class="form__group right">
+                        <button class="btn btn--small btn--green btn--save-password">
+                            Save password
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+
+<%- include('../user/partials/footer.ejs') %>

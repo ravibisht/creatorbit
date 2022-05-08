@@ -31,7 +31,7 @@ export default class CampaignApplicationService {
             data: {
                 campaign: {
                     connect: {
-                        userCampaign: {id: campaignId, userId}
+                        userCampaign: { id: campaignId, userId}
                     }
                 },
                 applicationStatus,
@@ -69,6 +69,28 @@ export default class CampaignApplicationService {
                 userId,
                 applicationStatus,
                 paymentStatus
+            },
+            include: {
+                campaign: true
+            }
+        })
+    }
+
+
+    getCampaignByOwnerId(userId, applicationStatus, paymentStatus) {
+        return this.db.findMany({
+            where: {
+                applicationStatus,
+                paymentStatus,
+                campaign: {
+                    userId: {
+                          equals: userId
+                    }
+                }
+            },
+            include: {
+                campaign: true,
+                user:true
             }
         })
     }

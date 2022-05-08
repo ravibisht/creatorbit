@@ -1,0 +1,246 @@
+	
+.custom-vertical-nav{
+position: fixed;
+top:0;
+height: 100%;
+width: 100px;
+align-items: baseline;
+justify-content: center;
+padding: 0;
+}
+
+
+.custom-vertical-nav .nav-link span{
+  display: block;
+  text-align: center;
+  font-size: 10px;
+}
+
+
+.custom-vertical-nav .nav-link .fa{
+  font-size: 30px;
+}
+
+ 
+.navbar-brand{
+  text-align: center;
+  width: 100%;
+}
+
+.navbar-brand img{
+  width: 60px;
+}
+
+
+.logo{
+  display: block;
+  font-size: 15px;
+}
+
+.custom-navbar-nav{
+  width:100%;
+}
+
+.custom-navbar-nav .active{
+  background-color: #787d82;
+  border-right: 3px solid #ffc107;
+}
+/*------------------------- Admin Dashboard -----------------------------*/
+ table {
+  width: 100%;
+}
+
+.custom-container {
+  margin-left: 100px;
+  margin-top: 40px;
+  width: calc(100% - 100px);
+}
+
+.custom-btn-link{
+  margin-left: 5px;
+  color: #fff;
+}
+
+
+
+.custom-mat-cell{
+  width: 120px;
+}
+
+.custom-brand{
+  width: 100%;
+  align-content: center;
+  text-align: center;
+  padding: 10px;
+}
+
+.custom-brand .fa{
+  font-size: 60px;
+}
+
+.btn-custom-link{
+  color: #fff!important;
+    display: block;
+    margin-bottom: 5px;
+}
+
+
+/*------------------ Dashboard Show Users ----------------------------*/
+
+ 
+.custom-container {  
+  margin-left: 150px;
+  margin-top: 40px;
+  width: calc(100% - 100px);
+}
+
+
+/*------------------------- Dashboard ProjectCategory -------------------------*/
+
+
+.custom-btn-link .glyphicon{
+  color: #fff;
+}
+
+
+.categroy_image img{
+
+     width: 92px;
+    height: 65px;
+    object-fit: cover;
+
+}
+
+
+/*--------------------- Dashboard User Profile ----------------------*/
+    
+      .p_item{
+
+        margin-bottom: 50px;
+        margin-top: 10px;
+      }
+      
+     .p_item .img_item img{
+       
+       border-radius: 10px;
+       width: 340px;
+       height: 300px;
+       object-fit: cover;
+    
+
+    }
+
+    .p_item .short_desc h4{
+      text-align: center;
+
+    }
+
+    .p_item .short_desc p{
+     text-align: center; 
+    }
+
+/*---------------------------------------- Dashboard Show Project --------------------------------------------------------*/
+ .project .p_header .p_u_name{
+      margin-left: 16px;
+      font-size: 19px;
+    }
+   
+   .project .p_header{
+        height: 66px;
+        background-color: white;
+        border-left:none;
+      }
+  
+  .d_header{
+    background-color:white;
+    border-left:none;
+   }
+
+  .project .p_image,.p_video{
+      width:650px;
+      height:650px;
+      object-fit: cover;
+  }
+  
+  .p_video{
+      width:650px;
+      height:688px;
+      object-fit: cover;
+  }
+  
+.comment_text{
+      display: inline-block;
+      box-sizing: border-box;
+      color: #1c1e21;
+      background-color: #f2f3f5;
+      border-radius: 18px;
+      padding:8px 10px;
+      margin-bottom: 9px;
+     }
+
+
+.customCol .col-8{
+
+  column-width: 650px;
+  width: 650px;
+  box-sizing: border-box;
+  padding-right: 0px;
+}
+
+.card,.project{
+  
+  margin-right: 0px;
+  padding-right: 0px;
+}
+
+.input_text{
+
+    border-radius: 23px;
+    width: 72%;
+    outline-style: none;
+    padding: 6px 15px;
+    margin-left: 25px;
+    border: 1px solid lightgrey;
+   }
+
+
+.description .card{
+
+        height: 800px;
+     }
+
+.descripton {
+    display: inline-block;
+    position: absolute;
+    width: 500px;
+    left: -96px;
+     height: 756px;
+
+ }   
+ 
+ .project_desc{
+   background-color:white;
+ }
+
+ 
+ /*----------------------- Dashboard Project Categroy -----------------*/
+ 
+ 
+ .custom-container-category{
+ 
+ position:reative;
+ top:30%;
+ 
+ }
+ 
+ 
+ /*------------------------- Dashboard Report --------------------------*/
+ 
+ .custom-container-report{
+  margin-left: 150px;
+  margin-top: 40px;
+  width: calc(100% - 100px);
+  height:400px;
+ 
+ }
+ 

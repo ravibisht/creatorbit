@@ -1,0 +1,54 @@
+<header>
+    <div id="nav-bar">
+        <a class="logo">
+            <img class="header__logo"
+                 src="/img/logo.svg"
+                 alt="creator bit"/></a>
+
+        <div class="nav-menu">
+            <div class="inner">
+                <div class="options">
+                    <div class="option">
+                        <div class="features-menu">
+                            <div class="dropdown creator">
+                                <a href="/campaign">Explore Campaigns</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="option dropdown">
+                        <a class="dropbtn">Categories</a>
+
+                        <div class="dropdown-content">
+
+                            <% var campaignCategories = campaignCategories;
+                            campaignCategories?.forEach( item => { %>
+                                <a href="/campaign-category/<%= item.id %>"><%= item.name %></a>
+                            <% }) %>
+                        </div>
+
+                    </div>
+                    <div class="option">
+                        <a href="/feedback">Feedback</a>
+                    </div>
+
+
+                    <div class="option">
+                        <a href="">About Us</a>
+                    </div>
+
+                    <% if (locals.user && locals.user.role === 'BRAND'){ %>
+                        <div class="option create-btn">
+                            <a href="/campaign/create">Create Campaign</a>
+                        </div>
+                    <% } %>
+
+                </div>
+                <div class="ctas">
+                    <a href="/my-profile" class="crco-cta blue secondary"><img src="../img/person-blue.svg"
+                                                                               alt="person blue"/><span>My Account</span></a>
+                    <a class="crco-cta blue text" href="/logout">Sign out</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

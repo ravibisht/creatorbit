@@ -1,0 +1,108 @@
+<%- include('../user/partials/header.ejs',{title:'Sign Up'}) %> <%-
+include('../user/partials/public-head.ejs') %>
+
+
+
+<body>
+    <main class="main">
+        <div class="login-form">
+            <h2 class="heading-secondary ma-bt-lg">Sign Up to Creator Bit</h2>
+            <form class="form form--login" method="post">
+                <div class="form__group">
+                    <label class="form__label" for="username">Username</label>
+                    <input
+                        name="username"
+                        class="form__input"
+                        id="username"
+                        type="text"
+                        placeholder="creator"
+                        required="required"
+                    />
+                </div>
+
+                <div class="form__group">
+                    <label class="form__label" for="name">Name</label>
+                    <input
+                        name="name"
+                        class="form__input"
+                        id="name"
+                        type="text"
+                        placeholder="John"
+                        required="required"
+                    />
+                </div>
+
+                <div class="form__group">
+                    <label class="form__label" for="email">Email address</label>
+                    <input
+                        name="email"
+                        class="form__input"
+                        id="email"
+                        type="email"
+                        placeholder="you@example.com"
+                        required="required"
+                    />
+                </div>
+
+                <div class="form__group">
+                    <label class="form__label" for="phone-no">Phone no</label>
+                    <input
+                        name="mobileNo"
+                        class="form__input"
+                        id="phone-no"
+                        type="number"
+                        placeholder="987654321"
+                        required="required"
+                    />
+                </div>
+
+                <div class="form__group ma-bt-md">
+                    <label class="form__label" for="password">Password</label>
+                    <input
+                        name="password"
+                        class="form__input"
+                        id="password"
+                        type="password"
+                        placeholder="••••••••"
+                        required="required"
+                        minlength="6"
+                    />
+                </div>
+
+                <div class="form__group ma-bt-md">
+                    <label class="form__label" for="role"
+                        >What Define you better ?</label
+                    >
+
+                    <div class="role-toolbar">
+                        <input
+                            class="role-type form__label"
+                            id="creator"
+                            name="role"
+                            type="radio"
+                            value="CREATOR"
+                            checked
+                        />
+                        <label for="creator">Creator</label>
+                        <input
+                            class="role-type form__label"
+                            id="brand"
+                            name="role"
+                            type="radio"
+                            value="BRAND"
+                        />
+                        <label for="brand">Brand</label>
+                    </div>
+                </div>
+
+                <div class="form__group">
+                    <button type="submit" class="btn btn--green">
+                        Sign Up
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+</body>
+
+<%- include('../user/partials/footer.ejs') %>

@@ -14,9 +14,21 @@ import {
     MAX_PROFILE_PICTURE_SIZE,
 } from '../../../core/validation/index.js'
 import * as path from 'path'
-import {isValidString} from "../../../core/validation/validation.js";
+import {isValidString} from '../../../core/validation/validation.js'
 
 const us = new UserService()
+
+export const registerView = (req, res) => {
+    res.render('user/sign-up')
+}
+
+export const loginView = (req, res) => {
+    res.render('user/login')
+}
+
+export const forgotPasswordView = (req, res) =>
+    res.render('/user/forgot-password')
+
 
 export const register = async (req, res) => {
 
@@ -48,15 +60,11 @@ export const register = async (req, res) => {
     userParam['password'] = await hashPassword(userParam.password)
 
     let createdUser = await us.create(userParam)
+
     delete createdUser['password']
 
-    res.json({
-        statusCode: StatusCodes.CREATED,
-        message: 'Account Created',
-        data: createdUser,
-    })
+    res.redirect('/login')
 }
-
 
 export const login = async (req, res) => {
 
@@ -71,22 +79,24 @@ export const login = async (req, res) => {
         throw new BadRequestException('Your Username or Password is Incorrect')
 
     const cookieOption = {
-        expires: new Date(
-            Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000,
-        ),
+        expires: new Date(Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000,),
         httpOnly: true,
     }
+
+    req.session.user = user
+
+    req.flash("messageInfo" ,{
+        message: "Logged In Successfully",
+        statusCode: StatusCodes.OK
+    })
 
     res.cookie(
         'authToken',
         'Bearer ' + getJwtToken({...user}),
         cookieOption,
-    ).json({
-        data: {user},
-        message: 'Logged in Successfully',
-        statusCode: StatusCodes.OK,
-    })
+    ).redirect('/')
 }
+
 
 
 export const forgotPassword = async (req, res) => {
@@ -116,13 +126,9 @@ export const forgotPassword = async (req, res) => {
     const subject = `Reset Password`
 
     try {
-        await sendEmail({email: user.email, subject, message,})
+        await sendEmail({email: user.email, subject, message})
     } catch (err) {
-
-        throw new HttpException(
-            StatusCodes.INTERNAL_SERVER_ERROR,
-            'Something went Wrong.',
-        )
+        throw new HttpException(StatusCodes.INTERNAL_SERVER_ERROR, 'Something went Wrong.',)
     }
 
     res.json({
@@ -132,14 +138,17 @@ export const forgotPassword = async (req, res) => {
     })
 }
 
+
 export const resetPassword = async (req, res) => {
+
     const {token} = req.params
 
     const hashedToken = createHash(token)
 
     const user = await us.findOne({token: hashedToken})
 
-    if (!user) throw new BadRequestException('Reset password link has been expired.')
+    if (!user)
+        throw new BadRequestException('Reset password link has been expired.')
 
     const {password} = req.body
 
@@ -147,10 +156,13 @@ export const resetPassword = async (req, res) => {
 
     const hashedPassword = await hashPassword(password)
 
+
     await us.updateResetToken(user.email, {
         password: hashedPassword,
         token: '',
     })
+
+
 
     res.json({
         statusCode: StatusCodes.OK,
@@ -158,20 +170,32 @@ export const resetPassword = async (req, res) => {
     })
 }
 
+export const getMyProfile = async (req, res) => {
+    const {id: userId} = req.user
+    const user = await us.getUserById(userId)
+    res.render('user/user-account.ejs', {user})
+}
+
+
 export const getUserByUsername = async (req, res) => {
+
     const {username} = req.params
 
     if (!username) throw new NotFoundException(`User Not Found`)
 
     const user = await us.findByUsername(username)
-    if (!user) throw new NotFoundException(`User Not Found With Username : ${username}`)
 
-    res.json({
+    if (!user) throw new NotFoundException(`User Not Found With Username : ${username}`,)
+
+
+    res.render('user/user-profile.ejs', {
         statusCode: StatusCodes.OK,
         message: 'User Detail',
-        data: user
+        user,
     })
 }
+
+
 
 export const updateProfile = async (req, res) => {
 
@@ -182,21 +206,8 @@ export const updateProfile = async (req, res) => {
     if (userParam.username && !isValidUsername(userParam.username))
         throw new BadRequestException('Please Provide Valid Username')
 
-    if (userParam.name && !isValidName(userParam.name))
-        throw new BadRequestException('Please Provide Valid Name')
-
     if (userParam.email && !isValidEmail(userParam.email))
         throw new BadRequestException('Please provide Valid Email')
-
-    if (userParam.username) {
-        const currentUsr = await us.findByUsername(userParam.username)
-        if (currentUsr) throw new BadRequestException('Username Already Exists')
-    }
-
-    if (userParam.email) {
-        const currentUser = await us.findByEmail(userParam.email)
-        if (currentUser) throw new BadRequestException('Email Already Exists')
-    }
 
     if (req.files && req.files.profilePicture) {
         const profilePicture = req.files.profilePicture
@@ -223,9 +234,24 @@ export const updateProfile = async (req, res) => {
 
     const updatedUser = await us.update(userParam)
 
-    res.json({
+
+    req.flash('messageInfo', {
+        message: 'Account Updated',
+        statusCode: StatusCodes.OK
+    })
+
+    res.render('user/user-account.ejs',{
         statusCode: StatusCodes.OK,
         message: 'Account Updated',
-        data: updatedUser,
+        user: updatedUser,
     })
+}
+
+
+export const logout = (req, res) => {
+
+    req.session.destroy()
+
+
+    res.redirect('/login',)
 }

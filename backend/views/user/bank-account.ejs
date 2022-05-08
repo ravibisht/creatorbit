@@ -1,0 +1,51 @@
+<%- include('../user/partials/header.ejs',{title:'Bank Account Detail'}) %>
+<%- include('../user/partials/head.ejs') %>
+
+<% if (messageInfo !== "undefined") { %>
+    <%- include('../user/partials/message.ejs',messageInfo ) %>
+<% } %>
+
+
+<body>
+<main class="main">
+    <div class="user-view">
+
+        <%- include('../user/user-nav.ejs') %>
+
+        <div class="user-view__content">
+            <div class="user-view__form-container">
+                <h2 class="heading-secondary ma-bt-md">
+                    Bank Account Detail
+                </h2>
+                <form class="form form-user-password" method="post" action="/bank-detail">
+
+                    <input type="hidden" name="id" value="<%= bankDetail?.id %>"/>
+                    <div class="form__group">
+                        <label class="form__label" htmlFor="bank-account-no">Bank Account No</label>
+                        <input class="form__input" id="bank-account-no" type="text" name="accountNo"
+                               value="<%= bankDetail?.accountNo %>" required="required" minlength="10"/>
+                    </div>
+                    <div class="form__group">
+                        <label class="form__label" htmlFor="IFSCCode">IFSC Code</label>
+                        <input class="form__input" id="IFSCCode" type="text" name="IFSCCode"
+                               value="<%= bankDetail?.IFSCCode %>" required="required" minlength="4"/>
+                    </div>
+                    <div class="form__group ma-bt-lg">
+                        <label class="form__label" htmlFor="account-name">Account Name</label>
+                        <input class="form__input" id="account-name" type="text" required="required"
+                               value="<%= bankDetail?.accountName %>"
+                               name="accountName"/>
+                    </div>
+                    <div class="form__group right">
+                        <button class="btn btn--small btn--green btn--save-password">
+                            Save Bank Detail
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+
+<%- include('../user/partials/footer.ejs') %>

@@ -1,0 +1,214 @@
+<%- include('../user/partials/header.ejs',{title:'Sign Up'}) %>
+<%-include('../user/partials/head.ejs') %>
+
+<% function getApplicationStatusClass(status) {
+    let className = "pending"
+
+    switch (status) {
+        case "PENDING":
+            className = "pending"
+            break;
+        case "REJECTED":
+            className = "rejected"
+            break;
+        case "ACCEPTED" :
+            className = "accepted"
+            break;
+        case "COMPLETED" :
+            className = "completed"
+            break;
+    }
+    return className
+} %>
+<% function getPaymentStatusClass(status) {
+    let className = "pending"
+
+    switch (status) {
+        case "PENDING":
+            className = "pending"
+            break;
+        case "PAID":
+            className = "completed"
+            break;
+        case "CANCELLED" :
+            className = "rejected"
+
+    }
+    return className
+} %>
+
+<body>
+<section class="section-header">
+    <div class="heading-box">
+        <h1 class="heading-primary">
+            <span><%=campaign.name %></span>
+        </h1>
+    </div>
+</section>
+
+<section class="section-description">
+    <section class="section-pictures">
+        <div class="picture-box">
+            <img
+                    class="picture-box__img "
+                    src="<%= campaign.image  %> "
+                    alt="<%=campaign.name %>"
+            />
+
+    </section>
+
+    <div class="overview-box">
+        <div>
+            <div class="overview-box__group">
+                <h2 class="heading-secondary ma-bt-md">
+                    Campaign Detail
+                </h2>
+
+                <div class="overview-box__detail">
+                    <svg class="overview-box__icon">
+                        <use
+                                xlink:href="img/icons.svg#icon-calendar"
+                        ></use>
+                    </svg>
+                    <span class="overview-box__label">Company Name  </span>
+                    <span class="overview-box__text"><%=campaign.user.name %></span>
+                </div>
+
+                <div class="overview-box__detail">
+                    <svg class="overview-box__icon">
+                        <use
+                                xlink:href="img/icons.svg#icon-calendar"
+                        ></use>
+                    </svg>
+                    <span class="overview-box__label">Category </span>
+                    <span class="overview-box__text">Social Media</span>
+                </div>
+
+                <div class="overview-box__detail">
+                    <svg class="overview-box__icon">
+                        <use
+                                xlink:href="img/icons.svg#icon-calendar"
+                        ></use>
+                    </svg>
+                    <span class="overview-box__label">Start Date</span>
+                    <span class="overview-box__text"><%= moment(campaign.startDate).format('ddd, MMMM-YYYY hh:mm A') %></span>
+                </div>
+
+                <div class="overview-box__detail">
+                    <svg class="overview-box__icon">
+                        <use
+                                xlink:href="img/icons.svg#icon-trending-up"
+                        ></use>
+                    </svg>
+                    <span class="overview-box__label">End Date</span>
+                    <span class="overview-box__text"
+                    ><%= moment(campaign.endDate).format('ddd, MMMM-YYYY hh:mm A') %>
+                            </span>
+                </div>
+
+                <div class="overview-box__detail">
+                    <svg class="overview-box__icon">
+                        <use xlink:href="img/icons.svg#icon-user"></use>
+                    </svg>
+                    <span class="overview-box__label">Price</span>
+                    <span class="overview-box__text"> <%= campaign.price%></span>
+                </div>
+            </div>
+
+            <form method="post" action="/campaign-application">
+                <input type="hidden" name="campaignId" value="<%= campaign.id%>"/>
+                <input type="submit" value="Apply For Campaign" class="btn btn--green span-all-rows">
+
+            </form>
+        </div>
+    </div>
+</section>
+
+<div class="description-box">
+    <h2 class="heading-secondary ma-bt-md">
+        About the park camper tour
+    </h2>
+
+    <p class="description__text">
+        <%= campaign.description  %>
+    </p>
+</div>
+
+
+<div class="campaign-nav">
+
+    <div class="campaign-title">
+
+                <span class="heading-secondary ">
+                    Campaign Application Requests
+                </span>
+
+        <div class="filter-item">
+            <span>Pending</span>
+            <img class="card__icon" src="img/arrow-black.svg">
+        </div>
+    </div>
+
+    <% campaign.CampaignApplication?.forEach(item=> { %>
+
+        <div class="campaign-container">
+
+            <div class="campaign-image">
+                <img src="<%= campaign.image %>" alt=""/>
+            </div>
+
+            <div class="campaign-header">
+
+                <h3 class="title">
+                    <%= campaign.name %>
+                </h3>
+
+                <p class="description">
+                    <%= campaign.shortDesc %>
+                </p>
+
+                <h4>Request By
+                    <a href="/<%= item.user.username %>">
+                        <%= item.user.name %>
+                    </a>
+                </h4>
+
+                <h4>Application Status
+                    <form style="display: inline;" action="/campaign-application/<%= item.id %>"
+                          method="post">
+
+                        <select name="applicationStatus"
+                                class=" application-status-brand <%= getApplicationStatusClass(item.applicationStatus) %>"
+                                onchange="this.form.submit()">
+                            <option  value="<%= item.applicationStatus %>"> <%= item.applicationStatus %></option>
+                            <option value="PENDING">Pending</option>
+                            <option value="ACCEPTED">Accept</option>
+                            <option value="REJECTED">Reject</option>
+                            <option value="COMPLETED">Complete</option>
+                        </select>
+                    </form>
+                </h4>
+
+                <h4 style="margin-top: 5px;">Payment Status
+
+                    <form style="display: inline;" action="/campaign-application/<%= item.id %>" method="post">
+
+                        <select name="paymentStatus"
+                                class=" application-status-brand <%=  getPaymentStatusClass(item.paymentStatus) %>"
+                                onchange="this.form.submit()">
+                            <option  value="<%= item.paymentStatus %>"> <%= item.paymentStatus %></option>
+                            <option value="PENDING">Pending</option>
+                            <option value="PAID">Paid</option>
+                            <option value="CANCELLED">Cancelled</option>
+                        </select>
+                    </form>
+
+                </h4>
+            </div>
+        </div>
+    <% }); %>
+
+</div>
+
+</body>
+<%- include('../user/partials/footer.ejs') %>

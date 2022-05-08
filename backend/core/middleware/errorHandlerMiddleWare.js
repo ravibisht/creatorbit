@@ -13,6 +13,8 @@ export default (err, req, res, next) => {
         return
     }
 
+
+
     if (err instanceof PrismaClientKnownRequestError) {
 
         res.status(StatusCodes.BAD_REQUEST).json({
