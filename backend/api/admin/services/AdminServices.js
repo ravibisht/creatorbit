@@ -4,9 +4,9 @@ import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
 import crypto from 'crypto'
 import {prismaExclude} from 'prisma-exclude'
-import {NotFoundException} from '../../../core/exception/index.js'
 
 export default class AdminUserService {
+
     constructor() {
         this.prisma = new prisma.PrismaClient()
         this.userDB = this.prisma.admin

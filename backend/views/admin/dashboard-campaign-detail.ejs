@@ -1,5 +1,7 @@
-<%- include('../user/partials/header.ejs',{title:'Sign Up'}) %>
-<%-include('../user/partials/head.ejs') %>
+
+<% if (messageInfo !== "undefined") { %>
+    <%- include('../admin/partials/message.ejs',messageInfo ) %>
+<% } %>
 
 <% function getApplicationStatusClass(status) {
     let className = "pending"
@@ -20,6 +22,7 @@
     }
     return className
 } %>
+
 <% function getPaymentStatusClass(status) {
     let className = "pending"
 
@@ -37,12 +40,15 @@
     return className
 } %>
 
-<body>
+
+<%- include('admin-dashboard-navigation.ejs') %>
+
+
 <section class="section-header">
     <div class="heading-box">
-        <h1 class="heading-primary">
+        <h5 class="heading-primary">
             <span><%=campaign.name %></span>
-        </h1>
+        </h5>
     </div>
 </section>
 
@@ -54,7 +60,7 @@
                     src="<%= campaign.image  %> "
                     alt="<%=campaign.name %>"
             />
-
+        </div>
     </section>
 
     <div class="overview-box">
@@ -65,40 +71,25 @@
                 </h2>
 
                 <div class="overview-box__detail">
-                    <svg class="overview-box__icon">
-                        <use xlink:href="img/icons.svg#icon-calendar"
-                        ></use>
-                    </svg>
-                    <span class="overview-box__label">Brand  </span>
+
+                    <span class="overview-box__label">Brand </span>
                     <span class="overview-box__text"><%=campaign.user.name %></span>
                 </div>
 
                 <div class="overview-box__detail">
-                    <svg class="overview-box__icon">
-                        <use
-                                xlink:href="img/icons.svg#icon-calendar"
-                        ></use>
-                    </svg>
+
                     <span class="overview-box__label">Category </span>
                     <span class="overview-box__text">Social Media</span>
                 </div>
 
                 <div class="overview-box__detail">
-                    <svg class="overview-box__icon">
-                        <use
-                                xlink:href="img/icons.svg#icon-calendar"
-                        ></use>
-                    </svg>
+
                     <span class="overview-box__label">Start Date</span>
                     <span class="overview-box__text"><%= moment(campaign.startDate).format('ddd, MMMM-YYYY hh:mm A') %></span>
                 </div>
 
                 <div class="overview-box__detail">
-                    <svg class="overview-box__icon">
-                        <use
-                                xlink:href="img/icons.svg#icon-trending-up"
-                        ></use>
-                    </svg>
+
                     <span class="overview-box__label">End Date</span>
                     <span class="overview-box__text"
                     ><%= moment(campaign.endDate).format('ddd, MMMM-YYYY hh:mm A') %>
@@ -106,14 +97,11 @@
                 </div>
 
                 <div class="overview-box__detail">
-                    <svg class="overview-box__icon">
-                        <use xlink:href="img/icons.svg#icon-user"></use>
-                    </svg>
+
                     <span class="overview-box__label">Price</span>
                     <span class="overview-box__text"> <%= campaign.price%></span>
                 </div>
             </div>
-
         </div>
     </div>
 </section>
@@ -137,10 +125,6 @@
                     Campaign Application Requests
                 </span>
 
-        <div class="filter-item">
-            <span>Pending</span>
-            <img class="card__icon" src="img/arrow-black.svg">
-        </div>
     </div>
 
     <% campaign.CampaignApplication?.forEach(item=> { %>
@@ -205,4 +189,3 @@
 </div>
 
 </body>
-<%- include('../user/partials/footer.ejs') %>

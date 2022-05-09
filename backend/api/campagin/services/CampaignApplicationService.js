@@ -99,5 +99,9 @@ export default class CampaignApplicationService {
         return this.db.findMany({})
     }
 
+    getAllCampaignApplicationCount(){
+        return this.db.count()
+    }
+
 }
 

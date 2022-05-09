@@ -5,12 +5,12 @@
         <div class="card-header">
             <div class="row">
                 <div class="col col-xs-6">
-                    <h3 class="panel-title text-center">All Feedbacks</h3>
+                    <h3 class="panel-title text-center">All Users</h3>
                 </div>
             </div>
         </div>
         <div class="ml-5 mt-3">
-            <form action="/admin/dashboard/show/feedback/" method="post" style=" display:inline!important;">
+            <form action="/admin/dashboard/show/user/page" method="post" style=" display:inline!important;">
            <span>
             Show
             <select name="totalRecordPerPage" onchange='this.form.submit()' >
@@ -45,20 +45,22 @@
                 </thead>
                 <tbody>
 
-                <% feedbacks.forEach(feedback => { %>
+                <% users.forEach(user => { %>
                     <tr>
-                        <td><%= feedback.id %></td>
-                        <td><%= feedback.fullName %></td>
-                        <td><%= feedback.mobileNo %></td>
-                        <td><%= feedback.email %></td>
-                        <td><%= feedback.message %></td>
-                        <td> <%= moment(feedback.contactDate).format('ddd, MMMM-YYYY hh:mm A') %></td>
+                        <td><%= user.id %></td>
+                        <td><%= user.name %></td>
+                        <td><%= user.username %></td>
+                        <td><%= user.role %></td>
+                        <td><%= user.email %></td>
+                        <td><%= user.mobileNo %></td>
 
                         <td style="width:140px;">
-
+                            <a class="btn btn-light btn-outline-success custom-btn-link text-dark"
+                               href="/admin/dashboard/show/user/<%=user.username %>">
+                                <i class="fa fa-eye" aria-hidden="true"></i></a>
 
                             <a class="btn btn-danger custom-btn-link"
-                               href="/admin/dashboard/user/delete/<%= feedback.id %>"
+                               href="/admin/dashboard/user/delete/<%= user.id %>"
                                onclick="return confirm('Are you really want to delete')"><i class="fa fa-trash"
                                                                                             aria-hidden="true">
                                 </i>

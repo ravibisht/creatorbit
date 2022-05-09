@@ -103,8 +103,8 @@ export default class UserService {
             where: {
                 username: username,
             },
-            include:{
-                BankDetail:true
+            include: {
+                BankDetail: true,
             },
         })
     }
@@ -121,6 +121,47 @@ export default class UserService {
         if (!param) throw new NotFoundException('User Not Found.')
         return this.userDB.findFirst({
             where: param,
+        })
+    }
+
+    getAllUsers() {
+        return this.userDB.findMany()
+    }
+
+    getAllUserCount() {
+        return this.userDB.count()
+    }
+
+    // getUserBetween(fromDate,toDate){
+    //     return this.userDB.findMany({
+    //         select: {
+    //             id: true,
+    //             name: true,
+    //             username: true,
+    //             email: true,
+    //             mobileNo: true,
+    //             role
+    //         }
+    //     })
+    // }
+
+    getUserBetween(fromDate, toDate) {
+        return this.userDB.findMany({
+            where: {
+                AND: [
+                    {
+                      createdAt: {
+                            gte: new Date(fromDate),
+                        },
+                    },
+                    {
+                        createdAt: {
+                            lte: new Date(toDate),
+                        },
+                    },
+                ],
+            },
+            select: this.exclude('user', ['password', 'updateAt']),
         })
     }
 }

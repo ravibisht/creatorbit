@@ -144,6 +144,7 @@ export const getCampaignByID = async (req, res) => {
         throw new NotFoundException(`Campaign Not Found With Id : ${id}`)
 
     let campaignDetailView = null
+
     if (req.user.role === 'BRAND') {
         campaignDetailView ='user/campaign-application-detail-brand.ejs'
     } else {

@@ -2,10 +2,6 @@
     --section-rotate: 9vw;
 }
 
-::-moz-selection {
-    background-color: #55c57a;
-    color: #fff;
-}
 
 ::selection {
     background-color: #55c57a;
@@ -966,16 +962,13 @@ body {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
+
     align-items: center;
 }
 
 
 
 .nav--tours {
-    -webkit-box-flex: 0;
-    -ms-flex: 0 1 40%;
     flex: 0 1 40%;
 }
 

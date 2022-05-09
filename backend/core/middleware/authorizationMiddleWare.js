@@ -36,3 +36,11 @@ export const restrictTo = (...roles) => {
         next()
     }
 }
+
+export const restrictToAdministrator = (...roles) => {
+    return (req, res, next) => {
+        if (!roles.includes(Role.valueOf(req.user.role))) throw new ForbiddenException("You Don't Have Permission to Access this Route.")
+        next()
+    }
+}
+

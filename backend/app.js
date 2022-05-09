@@ -19,6 +19,7 @@ import authorizationMiddleWare from './core/middleware/authorizationMiddleWare.j
 import paymentRoute from "./api/payment/routes/payment.route.js";
 import feedbackRoute from "./api/feedback/routes/feedback.route.js";
 import {homeView} from "./api/home/controller/home.controller.js";
+import dashboard from "./api/admin/routes/dashboard.js";
 
 export const app = express()
 
@@ -74,7 +75,10 @@ app.use(BASE_URL, authRouter)
 
 
 const ADMIN_AUTH = '/admin'
+const ADMIN_DASH_BOARD = '/admin/dashboard'
 app.use(ADMIN_AUTH,adminAuth)
+
+app.use(ADMIN_DASH_BOARD,authorizationMiddleWare,dashboard)
 
 app.use(notFoundMiddleware)
 app.use(errorHandlerMiddleWare)

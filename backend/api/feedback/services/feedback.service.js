@@ -22,4 +22,22 @@ export default class FeedbackService {
         })
     }
 
+    getAllFeedback() {
+        return this.db.findMany()
+    }
+
+    getAllFeedbackCount(){
+        return this.db.count()
+    }
+
+    getFeedbackBetween(fromDate, toDate) {
+        return this.db.findMany({
+            where: {
+                contactDate: {
+                    gte: new Date(fromDate),
+                },
+            },
+        })
+    }
+
 }

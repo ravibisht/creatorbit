@@ -44,7 +44,13 @@ export default class CampaignCategory {
         })
     }
 
-    async getAllCategory() {
+     getAllCategory() {
         return this.db.findMany()
     }
+
+    getCategoryCount(){
+        return this.db.count()
+    }
+
+
 }

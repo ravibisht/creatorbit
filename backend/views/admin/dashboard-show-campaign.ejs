@@ -5,12 +5,12 @@
         <div class="card-header">
             <div class="row">
                 <div class="col col-xs-6">
-                    <h3 class="panel-title text-center">All Feedbacks</h3>
+                    <h3 class="panel-title text-center">All Campaigns</h3>
                 </div>
             </div>
         </div>
         <div class="ml-5 mt-3">
-            <form action="/admin/dashboard/show/feedback/" method="post" style=" display:inline!important;">
+            <form action="/admin/dashboard/show/campaign/page" method="post" style=" display:inline!important;">
            <span>
             Show
             <select name="totalRecordPerPage" onchange='this.form.submit()' >
@@ -18,7 +18,7 @@
               <option value="10">10</option>
               <option value="50">50</option>
               <option value="100">100</option>
-              <option value="all">ALL</option>
+              <option >ALL</option>
             </select>
             entries
           </span>
@@ -34,31 +34,33 @@
             <table class="table table-hover">
                 <thead>
                 <tr>
-                    <th>User Id</th>
-                    <th>Full Name</th>
-                    <th>Username</th>
-                    <th>User Type</th>
-                    <th>Email</th>
-                    <th>Mobile no</th>
+                    <th>Id</th>
+                    <th>Campaign Name</th>
+                    <th>Category Name</th>
+                    <th>Short Desc</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
 
-                <% feedbacks.forEach(feedback => { %>
+                <% campaigns.forEach(item => { %>
                     <tr>
-                        <td><%= feedback.id %></td>
-                        <td><%= feedback.fullName %></td>
-                        <td><%= feedback.mobileNo %></td>
-                        <td><%= feedback.email %></td>
-                        <td><%= feedback.message %></td>
-                        <td> <%= moment(feedback.contactDate).format('ddd, MMMM-YYYY hh:mm A') %></td>
+                        <td><%= item.id %></td>
+                        <td><%= item.name %></td>
+                        <td><%= item.campaign.name %></td>
+                        <td><%= item.shortDesc %></td>
+                        <td><%= moment(item.startDate).format('ddd, MMMM-YYYY hh:mm A') %></td>
+                        <td><%= moment(item.endDate).format('ddd, MMMM-YYYY hh:mm A') %> </td>
 
                         <td style="width:140px;">
-
+                            <a class="btn btn-light btn-outline-success custom-btn-link text-dark"
+                               href="/admin/dashboard/show/campaign/<%= item.id %>">
+                                <i class="fa fa-eye" aria-hidden="true"></i></a>
 
                             <a class="btn btn-danger custom-btn-link"
-                               href="/admin/dashboard/user/delete/<%= feedback.id %>"
+                               href="/admin/dashboard/campaign/delete/<%= item.id %>"
                                onclick="return confirm('Are you really want to delete')"><i class="fa fa-trash"
                                                                                             aria-hidden="true">
                                 </i>
@@ -75,17 +77,17 @@
             <ul class="pagination  justify-content-center">
 
                 <li class="page-item disabled ">
-                    <a class="page-link" href="/admin/dashboard/show/users/page?page=-1" aria-label="Previous">
+                    <a class="page-link" href="/admin/dashboard/show/campaigns/page?page=-1" aria-label="Previous">
                         <span aria-hidden="true">Previous</span>
                     </a>
                 </li>
 
 
                 <li class="page-item active">
-                    <a class="page-link" href="/admin/dashboard/show/users/page?page=0">1</a>
+                    <a class="page-link" href="/admin/dashboard/show/campaigns/page?page=0">1</a>
                 </li>
                 <li class="page-item disabled">
-                    <a class="page-link" href="/admin/dashboard/show/users/page?page=1" aria-label="Next">
+                    <a class="page-link" href="/admin/dashboard/show/campaigns/page?page=1" aria-label="Next">
                         <span aria-hidden="true">Next</span>
                     </a>
                 </li>

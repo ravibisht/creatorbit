@@ -128,7 +128,29 @@ export default class CampaignService {
         })
     }
 
-    totalCampaign() {
+    getCampaignCount() {
         return this.db.count()
+    }
+
+    getCampaignBetween(fromDate, toDate) {
+        return this.db.findMany({
+            where: {
+                AND: [
+                    {
+                        createdAt: {
+                            gte: new Date(fromDate),
+                        },
+                    },
+                    {
+                        createdAt: {
+                            lte: new Date(toDate),
+                        },
+                    },
+                ],
+            },
+            include:{
+                campaign:true
+            }
+        })
     }
 }

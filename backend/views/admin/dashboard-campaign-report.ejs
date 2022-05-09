@@ -1,0 +1,55 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Campaign Report</title>
+    <link rel="stylesheet" href="/css/bootstrap/css/bootstrap.min.css"/>
+</head>
+<body>
+
+
+<div class="container-fluid">
+    <h1 class="text-center mt-2 pb-3">Creator Bit Campaigns Report</h1>
+
+    <br>
+
+    <div class="table-responsive" >
+
+        <table class="table table-bordered">
+            <thead>
+            <tr class="text-center">
+                <th>Id</th>
+                <th>Campaign Name</th>
+                <th>Category Name</th>
+                <th>Short Desc</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <% campaigns.forEach(item => { %>
+                <tr>
+                    <td><%= item.id %></td>
+                    <td><%= item.name %></td>
+                    <td><%= item.campaign.name %></td>
+                    <td><%= item.shortDesc %></td>
+                    <td><%= moment(item.startDate).format('ddd, MMMM-YYYY hh:mm A') %></td>
+                    <td><%= moment(item.endDate).format('ddd, MMMM-YYYY hh:mm A') %> </td>
+
+                </tr>
+            <% }); %>
+            </tbody>
+        </table>
+    </div>
+
+    <center>
+
+        <button   onclick="javascipt:window.print()" class="btn btn-primary px-5 m-4" >Print</button>
+    </center>
+</div>
+
+</body>
+</html>

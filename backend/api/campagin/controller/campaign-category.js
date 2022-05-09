@@ -7,6 +7,7 @@ import moment from 'moment'
 const ccs = new CampaignCategory()
 
 export const create = async (req, res) => {
+
     const {name, description, image} = req.body
 
     if (!isValidString(name, 3))
@@ -20,12 +21,15 @@ export const create = async (req, res) => {
 
     const category = await ccs.create({name, description, image})
 
-    res.status(StatusCodes.CREATED).json({
+
+    req.flash('messageInfo',{
         statusCode: StatusCodes.CREATED,
         message: 'Category Created Successfully',
-        data: {category},
     })
+    res.redirect('/admin/dashboard/create/campaign-category')
 }
+
+
 
 export const update = async (req, res) => {
     const {
@@ -48,14 +52,18 @@ export const update = async (req, res) => {
         image,
     })
 
-    res.json({
-        statusCode: StatusCodes.OK,
-        data: {category},
+
+    req.flash('messageInfo',{
+        statusCode: StatusCodes.CREATED,
         message: 'Category Updated Successfully',
     })
+    res.redirect('/admin/dashboard/show/campaign-category')
+
+
 }
 
 export const deleteCategory = async (req, res) => {
+
     const {categoryId} = req.params
 
     if (!categoryId) throw new BadRequestException('Please Provide Category Id')
@@ -63,11 +71,16 @@ export const deleteCategory = async (req, res) => {
     if (!isValidId(categoryId) || !(await ccs.delete(categoryId)))
         throw new BadRequestException('Category Is Not Valid')
 
-    res.json({
+
+
+    req.flash('messageInfo',{
         statusCode: StatusCodes.OK,
         message: 'Category Delete Successfully',
     })
+    res.redirect('/admin/dashboard/show/campaign-category')
+
 }
+
 
 export const getCategory = async (req, res) => {
 
@@ -82,9 +95,13 @@ export const getCategory = async (req, res) => {
         statusCode: StatusCodes.OK,
         category,
         moment,
-        message: 'Category Delete Successfully',
+        message: 'Category  Detail',
     })
 }
+
+
+
+
 
 export const getAllCategories = async (req, res) => {
     const categories = await ccs.getAllCategory()
