@@ -97,11 +97,7 @@ export const forgotPassword = async (req, res) => {
 
     const user = await us.findByEmail(email)
 
-    if (!user)
-        throw new HttpException(
-            StatusCodes.OK,
-            'Reset password has been sent to you registered Mail Id.',
-        )
+    if (!user) throw new BadRequestException('Account does not exist with this email.')
 
     const resetToken = generateToken()
 
